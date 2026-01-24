@@ -1,0 +1,276 @@
+'use client';
+
+import React, { useState } from 'react';
+import { useProject } from '@/context/ProjectContext';
+import { Card } from '@/components/ui/Card';
+import { Trash2, Edit3, Plus, Settings, Calendar, CreditCard, Phone, Mail, Globe, User } from 'lucide-react';
+import { clsx } from 'clsx';
+
+export function ManagementLayer() {
+    const { data, updateExpense, deleteExpense, updateTask, deleteTask, deleteSupplier } = useProject();
+    const [activeTab, setActiveTab] = useState<'expenses' | 'tasks' | 'suppliers'>('expenses');
+
+    return (
+        <section className="mt-12" id="management-section">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+                <div>
+                    <h2 className="text-2xl font-bold text-slate-800 dark:text-white">Gerenciamento Detalhado</h2>
+                    <p className="text-sm text-slate-500">Controle total sobre cada lançamento</p>
+                </div>
+
+                <div className="flex items-center gap-4">
+                    <div className="flex gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
+                        <button
+                            onClick={() => setActiveTab('expenses')}
+                            className={clsx(
+                                "px-6 py-2 rounded-lg text-sm font-bold transition-all",
+                                activeTab === 'expenses' ? "bg-white dark:bg-slate-700 shadow-sm text-blue-600" : "text-slate-500 hover:text-slate-700"
+                            )}
+                        >
+                            Gastos
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('tasks')}
+                            className={clsx(
+                                "px-6 py-2 rounded-lg text-sm font-bold transition-all",
+                                activeTab === 'tasks' ? "bg-white dark:bg-slate-700 shadow-sm text-blue-600" : "text-slate-500 hover:text-slate-700"
+                            )}
+                        >
+                            Tarefas
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('suppliers')}
+                            className={clsx(
+                                "px-6 py-2 rounded-lg text-sm font-bold transition-all",
+                                activeTab === 'suppliers' ? "bg-white dark:bg-slate-700 shadow-sm text-blue-600" : "text-slate-500 hover:text-slate-700"
+                            )}
+                        >
+                            Fornecedores
+                        </button>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => window.dispatchEvent(new CustomEvent('open-settings-modal'))}
+                            className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-all"
+                            title="Configurações do Projeto"
+                        >
+                            <Settings size={20} />
+                        </button>
+                        <button
+                            onClick={() => {
+                                const event = activeTab === 'expenses' ? 'open-expense-modal' :
+                                    activeTab === 'tasks' ? 'open-task-modal' :
+                                        'open-supplier-modal';
+                                window.dispatchEvent(new CustomEvent(event));
+                            }}
+                            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 shadow-lg shadow-blue-500/20 transition-all font-outfit"
+                        >
+                            <Plus size={18} />
+                            {activeTab === 'expenses' ? 'Novo Gasto' : activeTab === 'tasks' ? 'Nova Tarefa' : 'Novo Fornecedor'}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <Card className="p-0 overflow-hidden border-none shadow-xl bg-white dark:bg-slate-900">
+                <div className="overflow-x-auto">
+                    <table className="w-full text-sm text-left">
+                        <thead className="bg-slate-50/50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
+                            <tr>
+                                <th className="px-6 py-4 font-bold text-slate-400 uppercase tracking-widest text-[9px]">
+                                    {activeTab === 'suppliers' ? 'Fornecedor / Contato' : 'Nome / Item'}
+                                </th>
+                                <th className="px-6 py-4 font-bold text-slate-400 uppercase tracking-widest text-[9px]">Categoria</th>
+                                <th className="px-6 py-4 font-bold text-slate-400 uppercase tracking-widest text-[9px]">
+                                    {activeTab === 'expenses' ? 'Vencimento' : activeTab === 'tasks' ? 'Início' : 'Observações'}
+                                </th>
+                                <th className="px-6 py-4 font-bold text-slate-400 uppercase tracking-widest text-[9px] text-right">
+                                    {activeTab === 'expenses' ? 'Valor' : activeTab === 'tasks' ? 'Previsão Fim' : ''}
+                                </th>
+                                <th className="px-6 py-4 font-bold text-slate-400 uppercase tracking-widest text-[9px] text-center">Status</th>
+                                <th className="px-6 py-4 font-bold text-slate-400 uppercase tracking-widest text-[9px] text-right">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
+                            {activeTab === 'expenses' ? (
+                                data.expenses.length === 0 ? (
+                                    <tr><td colSpan={6} className="px-6 py-12 text-center text-slate-400 italic">Nenhum gasto registrado.</td></tr>
+                                ) : (
+                                    data.expenses.map(exp => (
+                                        <tr key={exp.id} className="hover:bg-slate-50/30 dark:hover:bg-slate-800/20 transition-colors group">
+                                            <td className="px-6 py-4">
+                                                <div className="font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                                                    {exp.name}
+                                                    {exp.installmentInfo && (
+                                                        <span className="px-1.5 py-0.5 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[8px] font-black rounded border border-blue-100 dark:border-blue-900/50">
+                                                            P{exp.installmentInfo.current}/{exp.installmentInfo.total}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                {exp.supplierId && (
+                                                    <div className="text-[9px] text-blue-500 font-bold flex items-center gap-1 mt-0.5">
+                                                        <User size={10} /> {data.suppliers.find(s => s.id === exp.supplierId)?.name || 'Fornecedor Desconhecido'}
+                                                    </div>
+                                                )}
+                                                {exp.paymentMethod && (
+                                                    <div className="text-[9px] text-slate-400 font-bold uppercase tracking-tight flex items-center gap-1 mt-0.5">
+                                                        <CreditCard size={10} /> {exp.paymentMethod}
+                                                    </div>
+                                                )}
+                                            </td>
+                                            <td className="px-6 py-4 text-slate-500 text-xs">{exp.category}</td>
+                                            <td className="px-6 py-4 text-xs font-bold text-slate-400">
+                                                {new Date(exp.dueDate || exp.date).toLocaleDateString('pt-BR')}
+                                            </td>
+                                            <td className="px-6 py-4 text-right font-mono font-bold text-slate-600 dark:text-slate-400">R$ {exp.amount.toLocaleString()}</td>
+                                            <td className="px-6 py-4 text-center">
+                                                <select
+                                                    value={exp.status}
+                                                    onChange={(e) => updateExpense(exp.id, { status: e.target.value as any })}
+                                                    className={clsx(
+                                                        "px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-tighter cursor-pointer outline-none border-none transition-all",
+                                                        exp.status === 'Paid' ? "bg-emerald-100 text-emerald-700" :
+                                                            exp.status === 'Deposit' ? "bg-blue-100 text-blue-700" : "bg-amber-100 text-amber-700"
+                                                    )}
+                                                >
+                                                    <option value="Paid">Pago</option>
+                                                    <option value="Deposit">Sinal</option>
+                                                    <option value="Pending">Pendente</option>
+                                                </select>
+                                            </td>
+                                            <td className="px-6 py-4 text-right">
+                                                <div className="flex justify-end gap-1">
+                                                    <button
+                                                        onClick={() => window.dispatchEvent(new CustomEvent('edit-expense', { detail: exp }))}
+                                                        className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                                                        title="Editar"
+                                                    >
+                                                        <Edit3 size={14} />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => { if (confirm('Excluir este gasto?')) deleteExpense(exp.id) }}
+                                                        className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
+                                                        title="Excluir"
+                                                    >
+                                                        <Trash2 size={14} />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )
+                            ) : activeTab === 'tasks' ? (
+                                data.tasks.length === 0 ? (
+                                    <tr><td colSpan={6} className="px-6 py-12 text-center text-slate-400 italic">Nenhuma tarefa registrada.</td></tr>
+                                ) : (
+                                    data.tasks.map(task => (
+                                        <tr key={task.id} className="hover:bg-slate-50/30 dark:hover:bg-slate-800/20 transition-colors group">
+                                            <td className="px-6 py-4 font-bold text-slate-700 dark:text-slate-200">{task.title}</td>
+                                            <td className="px-6 py-4 text-slate-500 text-xs">{task.category}</td>
+                                            <td className="px-6 py-4 text-right font-mono text-slate-400 text-xs">
+                                                {new Date(task.startDate).toLocaleDateString('pt-BR')}
+                                            </td>
+                                            <td className="px-6 py-4 text-right font-mono font-bold text-slate-600 dark:text-slate-400">
+                                                {new Date(task.endDate).toLocaleDateString('pt-BR')}
+                                            </td>
+                                            <td className="px-6 py-4 text-center">
+                                                <select
+                                                    value={task.status}
+                                                    onChange={(e) => updateTask(task.id, { status: e.target.value as any })}
+                                                    className={clsx(
+                                                        "px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-tighter cursor-pointer outline-none border-none transition-all",
+                                                        task.status === 'Completed' ? "bg-emerald-100 text-emerald-700" :
+                                                            task.status === 'In Progress' ? "bg-amber-100 text-amber-700" :
+                                                                task.status === 'Blocked' ? "bg-rose-100 text-rose-700" : "bg-slate-100 text-slate-700"
+                                                    )}
+                                                >
+                                                    <option value="Pending">Pendente</option>
+                                                    <option value="In Progress">Em Curso</option>
+                                                    <option value="Completed">Pronto</option>
+                                                    <option value="Blocked">Bloqueado</option>
+                                                </select>
+                                            </td>
+                                            <td className="px-6 py-4 text-right">
+                                                <div className="flex justify-end gap-1">
+                                                    <button
+                                                        onClick={() => window.dispatchEvent(new CustomEvent('edit-task', { detail: task }))}
+                                                        className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                                                        title="Editar"
+                                                    >
+                                                        <Edit3 size={14} />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => { if (confirm('Excluir esta tarefa?')) deleteTask(task.id) }}
+                                                        className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
+                                                        title="Excluir"
+                                                    >
+                                                        <Trash2 size={14} />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )
+                            ) : (
+                                data.suppliers.length === 0 ? (
+                                    <tr><td colSpan={6} className="px-6 py-12 text-center text-slate-400 italic">Nenhum fornecedor cadastrado.</td></tr>
+                                ) : (
+                                    data.suppliers.map(sup => (
+                                        <tr key={sup.id} className="hover:bg-slate-50/30 dark:hover:bg-slate-800/20 transition-colors group">
+                                            <td className="px-6 py-4">
+                                                <div className="font-bold text-slate-700 dark:text-slate-200">{sup.name}</div>
+                                                <div className="flex flex-col gap-0.5 mt-1">
+                                                    <div className="text-[10px] text-slate-500 font-bold flex items-center gap-1">
+                                                        <Phone size={10} /> {sup.phone1} {sup.phone2 && `/ ${sup.phone2}`}
+                                                    </div>
+                                                    {sup.email && (
+                                                        <div className="text-[10px] text-blue-500/70 font-medium flex items-center gap-1">
+                                                            <Mail size={10} /> {sup.email}
+                                                        </div>
+                                                    )}
+                                                    {sup.website && (
+                                                        <div className="text-[10px] text-slate-400 font-medium flex items-center gap-1">
+                                                            <Globe size={10} /> {sup.website}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 text-slate-500 text-xs">{sup.category}</td>
+                                            <td colSpan={2} className="px-6 py-4 text-xs italic text-slate-400">{sup.notes || '-'}</td>
+                                            <td className="px-6 py-4 text-center">
+                                                <div className="flex justify-center gap-0.5">
+                                                    {[1, 2, 3, 4, 5].map(star => (
+                                                        <span key={star} className={clsx("text-xs", star <= (sup.rating || 0) ? "text-amber-400" : "text-slate-200")}>★</span>
+                                                    ))}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 text-right">
+                                                <div className="flex justify-end gap-1">
+                                                    <button
+                                                        onClick={() => window.dispatchEvent(new CustomEvent('edit-supplier', { detail: sup }))}
+                                                        className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                                                        title="Editar"
+                                                    >
+                                                        <Edit3 size={14} />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => { if (confirm('Remover fornecedor?')) deleteSupplier(sup.id) }}
+                                                        className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
+                                                        title="Excluir"
+                                                    >
+                                                        <Trash2 size={14} />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </Card>
+        </section>
+    );
+}
