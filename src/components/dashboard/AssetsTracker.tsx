@@ -3,7 +3,7 @@
 import React from 'react';
 import { useProject } from '@/context/ProjectContext';
 import { Card } from '@/components/ui/Card';
-import { Package, Truck, CheckCircle2, Trash2, Plus, User } from 'lucide-react';
+import { Package, Truck, CheckCircle2, Trash2, Plus, User, Edit3 } from 'lucide-react';
 import { clsx } from 'clsx';
 
 export function AssetsTracker() {
@@ -59,8 +59,23 @@ export function AssetsTracker() {
                             </div>
                             <div className="flex items-center gap-1">
                                 <button
+                                    onClick={() => {
+                                        const linkedExpense = data.expenses.find(e => e.orderId === asset.id || e.id === asset.id);
+                                        if (linkedExpense) {
+                                            window.dispatchEvent(new CustomEvent('edit-expense', { detail: linkedExpense }));
+                                        } else {
+                                            window.dispatchEvent(new CustomEvent('edit-asset', { detail: asset }));
+                                        }
+                                    }}
+                                    className="p-2 text-slate-300 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-all"
+                                    title="Editar"
+                                >
+                                    <Edit3 size={16} />
+                                </button>
+                                <button
                                     onClick={() => { if (confirm('Excluir este item?')) deleteAsset(asset.id) }}
                                     className="p-2 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
+                                    title="Excluir"
                                 >
                                     <Trash2 size={16} />
                                 </button>

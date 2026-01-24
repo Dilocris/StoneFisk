@@ -124,3 +124,81 @@ All agents MUST read this to understand context before starting work.
     - **UI Transparency**: Added supplier identity badges (👤) to the Expenses table and Assets Tracker cards.
     - **Form UX**: Integrated supplier selection dropdowns in both `AddExpenseForm` and `AddAssetForm`.
 - **Reason**: Enable full traceability of purchases, allowing the user to know exactly which supplier to contact for each item expected at the construction site.
+
+## 2026-01-15: Architect's Schedule Integration
+- **Action**: Injected the official architect's schedule into the project tasks and Gantt chart.
+- **Details**:
+    - **Extraction**: Processed schedule image and extracted 9 key project phases (Briefing, Levantamento, EP, AT, EX-ARQ, EX-MCN).
+    - **Status Logic**: Automatically categorized past phases as "Completed" and current phases as "In Progress" based on the current date (Jan 15th, 2026).
+    - **Database Update**: Directly updated `db.json` to ensure the new milestones are permanent and synchronized across the dashboard.
+- **Reason**: Align the project management tool with the professional timeline provided by the architectural team.
+
+## 2026-01-15: Financial Status Chart Refactor
+- **Action**: Redesigned the `BudgetWidget` chart to resolve visual clipping issues.
+- **Details**:
+    - **UI Pivot**: Replaced the radial `PieChart` with a custom vertical "Budget Column" (thermometer style).
+    - **Optimization**: The new vertical layout naturally fits within the card's dimensions across all viewport sizes, eliminating SVG overflow.
+    - **Premium Detail**: Added dynamic segment heights, shadow effects, and a floating percentage label for a high-end feel.
+- **Reason**: Fix visual bug and improve data legibility in the main financial dashboard widget.
+
+## 2026-01-15: Refinamentos de UX e Interatividade (Fase 14)
+- **Action**: Aprimoramento da conectividade e fluidez visual do dashboard.
+- **Details**:
+    - **Gantt**: Adicionado destaque para o dia atual ("Hoje") e clique interativo nas tarefas para edição rápida.
+    - **Finanças**: Refatoração do `BudgetWidget` para segmentos sólidos e reposicionamento do badge de porcentagem (evitando overlap).
+    - **Logística**: Implementação de edição inteligente no `AssetsTracker` (direcionamento automático para Gasto ou Item).
+    - **UI**: Limpeza de botões redundantes e correção de lints de sincronia.
+- **Reason**: Melhorar a usabilidade e o profissionalismo da interface com base no feedback visual.
+
+## 2026-01-16: Cronograma Avançado e Padronização (Fase 15)
+- **Action**: Implementação de navegação temporal robusta e categorização precisa.
+- **Details**:
+    - **Gantt**: Adicionado suporte a datas passadas, setas de navegação (salto de 7 dias), botão de "Pular para Data" e marcadores de feriados brasileiros (2026). Remoção da barra de rolagem lateral em favor da navegação por estado.
+    - **Finanças**: Ajustada a posição da porcentagem no `BudgetWidget` para eliminar o corte visual (clipping) no canto da tela.
+    - **Cômodos**: Padronização da lista de áreas/cômodos para a ordem alfabética solicitada (*Área de Serviço, Escritório 2, Quarto 1, Quarto 2, Tudo, Varanda Casal*).
+- **Reason**: Atender à necessidade de visualização histórica do cronograma e garantir precisão na categorização de gastos e tarefas.
+
+## 2026-01-16: Refinamento de Precisão e Logística (Fase 16)
+- **Action**: Aperfeiçoamento da fidelidade do cronograma e integração de fornecedores em tarefas.
+- **Details**:
+    - **Gantt**: Ajustado o cálculo de início das barras para precisão milimétrica (dia real). Implementado destaque pulsante ("Atrasado") para tarefas que passaram do prazo sem conclusão.
+    - **Visual**: Substituição do azul pelo cinza azulado (`slate-500`) na categoria Pendente. Setas de navegação ampliadas e mais destacadas.
+    - **Logística**: Restauração da lista completa de cômodos (14 entradas ordenadas).
+    - **Conectividade**: Adicionado campo `supplierId` às tarefas, permitindo vincular responsáveis (ex: pedreiro, eletricista) diretamente no cronograma.
+- **Reason**: Garantir que o dashboard reflita fielmente o andamento real e as responsabilidades da obra.
+
+## 2026-01-16: Reversão da Fase 17 (Rollback)
+- **Action**: Reversão completa das alterações de cores e tema arquitetônico.
+- **Details**: 
+    - Removidas as classes `brand-*` e definições no `globals.css`.
+    - Restaurada a paleta de cores original (Azul, Verde, Âmbar, Rosa) em todos os componentes.
+- **Reason**: Relato de que as cores "quebraram" a interface em alguns dispositivos/navegadores. Estabilidade visual restaurada.
+
+## 2026-01-16: Refinamentos de UX e Rastreio de Atrasos (Fase 18)
+- **Action**: Aperfeiçoamento da entrada de dados e novos KPIs de cronograma.
+- **Details**: 
+    - **Phone Mask**: Implementada máscara dinâmica `(##) #####-####` no cadastro de fornecedores, removendo o DDD fixo e adicionando limites de caracteres.
+    - **Budget UI**: Centralizado o balão de porcentagem no "termômetro" financeiro para evitar cortes nas bordas em telas menores.
+    - **Gantt Delay Tracking**: Adicionado o KPI "Carga de Atraso" no cabeçalho do cronograma, que soma o total de dias de atraso de todas as tarefas pendentes/bloqueadas.
+- **Reason**: Melhorar a precisão da entrada de dados e fornecer uma visão clara de quanto tempo a obra está acumulando de atraso total.
+
+## 2026-01-16: Tema Monokai Dimmed (Fase 19)
+- **Action**: Implementação de tema escuro premium inspirado no VS Code.
+- **Details**: 
+    - **Palette overhaul**: Substituição de todas as cores por hexes Monokai Dimmed (#1e1e1e / #c5c8c6).
+    - **Mapped Colors**: 
+        - Pendente: #49483e (Muted Gray)
+        - Em Curso: #fce566 (Monokai Yellow)
+        - Pronto/Pago: #98e342 (Monokai Green)
+        - Bloqueado/Atraso: #f92672 (Monokai Red)
+        - Ações: #67d8ef (Monokai Cyan)
+    - **Global consistency**: Atualizados Gantt, Orçamento, Tabelas e Formulários para total coesão.
+- **Reason**: Preferência estética do usuário por um visual de IDE de alta performance e baixo cansaço visual.
+
+## 2026-01-24: Environment Setup & Fix
+- **Action**: Installed Node.js 24 and restored dev environment.
+- **Details**: 
+    - Detected missing `npm` and installed Node.js via `winget`.
+    - Cleared corrupted `.next` cache to resolve Turbopack crash.
+    - Successfully started development server on port 3000.
+- **Reason**: Enable access to the dashboard.

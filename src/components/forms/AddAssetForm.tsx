@@ -6,12 +6,13 @@ import { Check, Loader2, Package } from 'lucide-react';
 
 interface AddAssetFormProps {
     onSuccess: () => void;
+    initialData?: any;
 }
 
-export function AddAssetForm({ onSuccess }: AddAssetFormProps) {
-    const { data, addAsset } = useProject();
-    const [name, setName] = useState('');
-    const [supplierId, setSupplierId] = useState('');
+export function AddAssetForm({ onSuccess, initialData }: AddAssetFormProps) {
+    const { data, addAsset, updateAsset } = useProject();
+    const [name, setName] = useState(initialData?.name || '');
+    const [supplierId, setSupplierId] = useState(initialData?.supplierId || '');
     const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -19,11 +20,15 @@ export function AddAssetForm({ onSuccess }: AddAssetFormProps) {
         setIsLoading(true);
 
         try {
-            addAsset({
-                name,
-                status: 'Purchased',
-                supplierId
-            });
+            if (initialData) {
+                updateAsset(initialData.id, { name, supplierId });
+            } else {
+                addAsset({
+                    name,
+                    status: 'Purchased',
+                    supplierId
+                });
+            }
             onSuccess();
         } finally {
             setIsLoading(false);
@@ -63,11 +68,11 @@ export function AddAssetForm({ onSuccess }: AddAssetFormProps) {
 
             <button
                 type="submit"
-                disabled={isLoading || !name}
-                className="w-full py-4 bg-blue-600 text-white font-bold rounded-2xl shadow-lg shadow-blue-500/30 hover:bg-blue-700 transition-all flex items-center justify-center disabled:opacity-50"
+                disabled={isLoading}
+                className="w-full py-4 bg-[#67d8ef] text-black font-bold rounded-2xl shadow-lg shadow-[#67d8ef]/30 hover:bg-[#67d8ef]/90 transition-all flex items-center justify-center disabled:opacity-50"
             >
                 {isLoading ? <Loader2 className="animate-spin mr-2" size={20} /> : <Check className="mr-2" size={20} />}
-                Rastrear Entrega
+                {initialData ? 'Salvar Alterações' : 'Rastrear Entrega'}
             </button>
         </form>
     );

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useProject } from '@/context/ProjectContext';
 import { Category, Expense, Room, CATEGORIES, ROOMS } from '@/lib/types';
 import { Check, Loader2, Paperclip, X, CreditCard, Calendar, Repeat } from 'lucide-react';
+import { clsx } from 'clsx';
 
 interface AddExpenseFormProps {
     onSuccess: () => void;
@@ -79,15 +80,15 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4 pt-4">
-            <div className="bg-blue-50/50 dark:bg-slate-800/50 p-4 rounded-2xl mb-4 border border-blue-100 dark:border-slate-800">
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Informações de Compra</label>
+            <div className="bg-[#2d2d2d] p-4 rounded-2xl mb-4 border border-[#3e3d32] shadow-sm">
+                <label className="block text-xs font-bold text-[#9a9a9a] uppercase tracking-widest mb-3">Informações de Compra</label>
                 <div className="space-y-4">
                     <input
                         required
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         placeholder="Nome do produto ou serviço (ex: Piso Vinílico)"
-                        className="w-full p-3 bg-white dark:bg-slate-900 rounded-xl border-none focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm font-bold"
+                        className="w-full p-3 bg-[#1c1c1c] text-white rounded-xl border border-[#3e3d32] focus:ring-2 focus:ring-[#67d8ef] outline-none transition-all text-sm font-bold placeholder:text-[#49483e]"
                     />
 
                     <div className="grid grid-cols-2 gap-4">
@@ -99,14 +100,14 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
                                 value={amount}
                                 onChange={(e) => setAmount(e.target.value)}
                                 placeholder="Valor Total (R$)"
-                                className="w-full p-3 pl-10 bg-white dark:bg-slate-900 rounded-xl border-none focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm font-mono font-bold"
+                                className="w-full p-3 pl-10 bg-[#1c1c1c] text-white rounded-xl border border-[#3e3d32] focus:ring-2 focus:ring-[#67d8ef] outline-none transition-all text-sm font-mono font-bold placeholder:text-[#49483e]"
                             />
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">R$</span>
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9a9a9a] font-bold text-xs">R$</span>
                         </div>
                         <select
                             value={category}
                             onChange={(e) => setCategory(e.target.value as Category)}
-                            className="w-full p-3 bg-white dark:bg-slate-900 rounded-xl border-none focus:ring-2 focus:ring-blue-500 outline-none transition-all text-xs font-bold"
+                            className="w-full p-3 bg-[#1c1c1c] text-white rounded-xl border border-[#3e3d32] focus:ring-2 focus:ring-[#67d8ef] outline-none transition-all text-xs font-bold"
                         >
                             {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                         </select>
@@ -115,7 +116,7 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
                     <select
                         value={supplierId}
                         onChange={(e) => setSupplierId(e.target.value)}
-                        className="w-full p-3 bg-white dark:bg-slate-900 rounded-xl border-none focus:ring-2 focus:ring-blue-500 outline-none transition-all text-xs font-bold"
+                        className="w-full p-3 bg-[#1c1c1c] text-white rounded-xl border border-[#3e3d32] focus:ring-2 focus:ring-[#67d8ef] outline-none transition-all text-xs font-bold"
                     >
                         <option value="">Selecione o Fornecedor (Opcional)</option>
                         {data.suppliers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
@@ -124,26 +125,26 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-                <div className="bg-slate-50 dark:bg-slate-800/30 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
-                    <label className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase mb-2">
-                        <Calendar size={12} className="text-blue-500" /> Vencimento
+                <div className="bg-[#2d2d2d] p-4 rounded-2xl border border-[#3e3d32]">
+                    <label className="flex items-center gap-2 text-[10px] font-bold text-[#9a9a9a] uppercase mb-2">
+                        <Calendar size={12} className="text-[#67d8ef]" /> Vencimento
                     </label>
                     <input
                         type="date"
                         required
                         value={dueDate}
                         onChange={(e) => setDueDate(e.target.value)}
-                        className="w-full bg-transparent border-none focus:ring-0 outline-none text-sm font-bold text-slate-700 dark:text-slate-200"
+                        className="w-full bg-transparent border-none focus:ring-0 outline-none text-sm font-bold text-white custom-calendar-icon-white"
                     />
                 </div>
-                <div className="bg-slate-50 dark:bg-slate-800/30 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
-                    <label className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase mb-2">
-                        <CreditCard size={12} className="text-blue-500" /> Forma
+                <div className="bg-[#2d2d2d] p-4 rounded-2xl border border-[#3e3d32]">
+                    <label className="flex items-center gap-2 text-[10px] font-bold text-[#9a9a9a] uppercase mb-2">
+                        <CreditCard size={12} className="text-[#67d8ef]" /> Forma
                     </label>
                     <select
                         value={paymentMethod}
                         onChange={(e) => setPaymentMethod(e.target.value)}
-                        className="w-full bg-transparent border-none focus:ring-0 outline-none text-sm font-bold text-slate-700 dark:text-slate-200"
+                        className="w-full bg-transparent border-none focus:ring-0 outline-none text-sm font-bold text-white"
                     >
                         <option value="PIX">PIX</option>
                         <option value="Boleto">Boleto</option>
@@ -193,23 +194,50 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
                 </div>
             )}
 
-            <div className="flex gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl">
+            <div className="flex gap-4 p-4 bg-[#2d2d2d] rounded-2xl border border-[#3e3d32]">
                 <div className="flex-1">
-                    <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2">Cômodo</label>
+                    <label className="block text-[10px] font-bold text-[#9a9a9a] uppercase mb-2">Cômodo</label>
                     <select
                         value={room}
                         onChange={(e) => setRoom(e.target.value as Room)}
-                        className="w-full bg-transparent border-none focus:ring-0 outline-none text-xs font-bold"
+                        className="w-full bg-[#1c1c1c] text-white rounded-xl border border-[#3e3d32] focus:ring-2 focus:ring-[#67d8ef] outline-none transition-all p-2 text-xs font-bold"
                     >
                         {ROOMS.map(r => <option key={r} value={r}>{r}</option>)}
                     </select>
                 </div>
                 <div className="flex-1">
-                    <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2">Status</label>
-                    <div className="flex gap-1">
-                        <button type="button" onClick={() => setStatus('Paid')} className={`flex-1 py-1 rounded-md text-[9px] font-black uppercase transition-all ${status === 'Paid' ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/20' : 'bg-slate-200 dark:bg-slate-700 text-slate-400'}`}>PAGO</button>
-                        <button type="button" onClick={() => setStatus('Deposit')} className={`flex-1 py-1 rounded-md text-[9px] font-black uppercase transition-all ${status === 'Deposit' ? 'bg-blue-500 text-white shadow-md shadow-blue-500/20' : 'bg-slate-200 dark:bg-slate-700 text-slate-400'}`}>SINAL</button>
-                        <button type="button" onClick={() => setStatus('Pending')} className={`flex-1 py-1 rounded-md text-[9px] font-black uppercase transition-all ${status === 'Pending' ? 'bg-amber-500 text-white shadow-md shadow-amber-500/20' : 'bg-slate-200 dark:bg-slate-700 text-slate-400'}`}>PEND</button>
+                    <label className="block text-[10px] font-bold text-[#9a9a9a] uppercase mb-2">Status</label>
+                    <div className="flex gap-2">
+                        <button
+                            type="button"
+                            onClick={() => setStatus('Paid')}
+                            className={clsx(
+                                "flex-1 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
+                                status === 'Paid' ? 'bg-[#98e342] text-black shadow-md' : 'bg-[#1c1c1c] text-[#9a9a9a]'
+                            )}
+                        >
+                            PAGO
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setStatus('Deposit')}
+                            className={clsx(
+                                "flex-1 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
+                                status === 'Deposit' ? 'bg-[#67d8ef] text-black shadow-md' : 'bg-[#1c1c1c] text-[#9a9a9a]'
+                            )}
+                        >
+                            SINAL
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setStatus('Pending')}
+                            className={clsx(
+                                "flex-1 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
+                                status === 'Pending' ? 'bg-[#fce566] text-black shadow-md' : 'bg-[#1c1c1c] text-[#9a9a9a]'
+                            )}
+                        >
+                            PEND
+                        </button>
                     </div>
                 </div>
             </div>
@@ -217,7 +245,7 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
             <button
                 type="submit"
                 disabled={isLoading || isUploading}
-                className="w-full py-4 bg-blue-600 text-white font-bold rounded-2xl shadow-lg shadow-blue-500/30 hover:bg-blue-700 transition-all mt-6 flex items-center justify-center disabled:opacity-70"
+                className="w-full py-4 bg-[#67d8ef] text-black font-bold rounded-2xl shadow-lg shadow-[#67d8ef]/30 hover:bg-[#67d8ef]/90 transition-all mt-4 flex items-center justify-center disabled:opacity-70"
             >
                 {isLoading ? <Loader2 className="animate-spin mr-2" size={20} /> : <Check className="mr-2" size={20} />}
                 {initialData ? 'SALVAR ALTERAÇÕES' : (isInstallment ? `REGISTRAR ${installmentCount} PARCELAS` : 'REGISTRAR GASTO')}

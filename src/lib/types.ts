@@ -35,9 +35,38 @@ export const CATEGORIES: Category[] = [
     'Outros'
 ];
 
-export type Room = 'Cozinha' | 'Sala de Estar' | 'Quarto Principal' | 'Banheiro' | 'Escritório' | 'Varanda' | 'Entrada' | 'Outros';
+export type Room =
+    | 'Área de Serviço'
+    | 'Banheiro'
+    | 'Cozinha'
+    | 'Entrada'
+    | 'Escritório'
+    | 'Escritório 2'
+    | 'Quarto 1'
+    | 'Quarto 2'
+    | 'Quarto Principal'
+    | 'Sala de Estar'
+    | 'Tudo'
+    | 'Varanda'
+    | 'Varanda Casal'
+    | 'Outros';
 
-export const ROOMS: Room[] = ['Cozinha', 'Sala de Estar', 'Quarto Principal', 'Banheiro', 'Escritório', 'Varanda', 'Entrada', 'Outros'];
+export const ROOMS: Room[] = [
+    'Área de Serviço',
+    'Banheiro',
+    'Cozinha',
+    'Entrada',
+    'Escritório',
+    'Escritório 2',
+    'Quarto 1',
+    'Quarto 2',
+    'Quarto Principal',
+    'Sala de Estar',
+    'Tudo',
+    'Varanda',
+    'Varanda Casal',
+    'Outros'
+];
 
 export interface Project {
     name: string;
@@ -70,6 +99,7 @@ export interface Task {
     status: 'Pending' | 'In Progress' | 'Completed' | 'Blocked';
     category: Category;
     room?: Room;
+    supplierId?: string;
     attachments?: string[];
 }
 

@@ -12,7 +12,7 @@ interface AddTaskFormProps {
 }
 
 export function AddTaskForm({ onSuccess, initialData }: AddTaskFormProps) {
-    const { addTask, updateTask } = useProject();
+    const { data, addTask, updateTask } = useProject();
     const [isLoading, setIsLoading] = useState(false);
 
     const [title, setTitle] = useState(initialData?.title || '');
@@ -21,6 +21,7 @@ export function AddTaskForm({ onSuccess, initialData }: AddTaskFormProps) {
     const [startDate, setStartDate] = useState(initialData?.startDate || new Date().toISOString().split('T')[0]);
     const [endDate, setEndDate] = useState(initialData?.endDate || new Date().toISOString().split('T')[0]);
     const [status, setStatus] = useState<Task['status']>(initialData?.status || 'Pending');
+    const [supplierId, setSupplierId] = useState(initialData?.supplierId || '');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -32,7 +33,8 @@ export function AddTaskForm({ onSuccess, initialData }: AddTaskFormProps) {
             room,
             startDate,
             endDate,
-            status
+            status,
+            supplierId
         };
 
         try {
@@ -108,6 +110,18 @@ export function AddTaskForm({ onSuccess, initialData }: AddTaskFormProps) {
             </div>
 
             <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Fornecedor Responsável</label>
+                <select
+                    value={supplierId}
+                    onChange={(e) => setSupplierId(e.target.value)}
+                    className="w-full p-3 bg-slate-50 rounded-xl border-none focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm font-bold"
+                >
+                    <option value="">Nenhum Fornecedor (Opcional)</option>
+                    {data.suppliers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                </select>
+            </div>
+
+            <div>
                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Status</label>
                 <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl">
                     {(['Pending', 'In Progress', 'Completed', 'Blocked'] as const).map((s) => (
@@ -118,8 +132,10 @@ export function AddTaskForm({ onSuccess, initialData }: AddTaskFormProps) {
                             className={clsx(
                                 "py-2 rounded-lg text-[10px] font-bold transition-all uppercase tracking-tighter",
                                 status === s
-                                    ? s === 'Blocked' ? "bg-rose-500 text-white shadow-sm" : "bg-white text-blue-600 shadow-sm"
-                                    : "text-slate-500 hover:bg-slate-200"
+                                    ? s === 'Blocked' ? "bg-[#f92672] text-white shadow-sm" :
+                                        s === 'Pending' ? "bg-[#49483e] text-white shadow-sm" :
+                                            "bg-[#2d2d2d] text-[#67d8ef] shadow-sm"
+                                    : "bg-[#2d2d2d]/30 text-[#9a9a9a]"
                             )}
                         >
                             {s === 'Pending' ? 'Pendente' : s === 'In Progress' ? 'Em Curso' : s === 'Completed' ? 'Pronto' : 'Bloqueado'}
@@ -131,7 +147,7 @@ export function AddTaskForm({ onSuccess, initialData }: AddTaskFormProps) {
             <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-4 bg-blue-600 text-white font-bold rounded-2xl shadow-lg shadow-blue-500/30 hover:bg-blue-700 transition-all mt-6 flex items-center justify-center disabled:opacity-70"
+                className="w-full py-4 bg-[#67d8ef] text-black font-bold rounded-2xl shadow-lg shadow-[#67d8ef]/30 hover:bg-[#67d8ef]/90 transition-all mt-6 flex items-center justify-center disabled:opacity-70"
             >
                 {isLoading ? <Loader2 className="animate-spin mr-2" size={20} /> : <Check className="mr-2" size={20} />}
                 {initialData ? 'SALVAR ALTERAÇÕES' : 'AGENDAR TAREFA'}

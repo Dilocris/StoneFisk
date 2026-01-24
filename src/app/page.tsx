@@ -31,18 +31,20 @@ export default function Home() {
   const [editingExpense, setEditingExpense] = useState<any>(null);
   const [editingTask, setEditingTask] = useState<any>(null);
   const [editingSupplier, setEditingSupplier] = useState<any>(null);
+  const [editingAsset, setEditingAsset] = useState<any>(null);
 
   // Event Listeners
   React.useEffect(() => {
     const openExp = () => { setEditingExpense(null); setIsExpenseModalOpen(true); };
     const openTask = () => { setEditingTask(null); setIsTaskModalOpen(true); };
-    const openAsset = () => setIsAssetModalOpen(true);
+    const openAsset = () => { setEditingAsset(null); setIsAssetModalOpen(true); };
     const openSupplier = () => { setEditingSupplier(null); setIsSupplierModalOpen(true); };
     const openSettings = () => setIsSettingsModalOpen(true);
 
     const editExp = (e: any) => { setEditingExpense(e.detail); setIsExpenseModalOpen(true); };
     const editTask = (e: any) => { setEditingTask(e.detail); setIsTaskModalOpen(true); };
     const editSup = (e: any) => { setEditingSupplier(e.detail); setIsSupplierModalOpen(true); };
+    const editAsset = (e: any) => { setEditingAsset(e.detail); setIsAssetModalOpen(true); };
 
     window.addEventListener('open-expense-modal', openExp);
     window.addEventListener('open-task-modal', openTask);
@@ -52,6 +54,7 @@ export default function Home() {
     window.addEventListener('edit-expense', editExp);
     window.addEventListener('edit-task', editTask);
     window.addEventListener('edit-supplier', editSup);
+    window.addEventListener('edit-asset', editAsset);
 
     return () => {
       window.removeEventListener('open-expense-modal', openExp);
@@ -62,6 +65,7 @@ export default function Home() {
       window.removeEventListener('edit-expense', editExp);
       window.removeEventListener('edit-task', editTask);
       window.removeEventListener('edit-supplier', editSup);
+      window.removeEventListener('edit-asset', editAsset);
     };
   }, []);
 
@@ -154,10 +158,10 @@ export default function Home() {
 
       <Modal
         isOpen={isAssetModalOpen}
-        onClose={() => setIsAssetModalOpen(false)}
-        title="Rastrear Item"
+        onClose={() => { setIsAssetModalOpen(false); setEditingAsset(null); }}
+        title={editingAsset ? "Editar Item" : "Rastrear Item"}
       >
-        <AddAssetForm onSuccess={() => setIsAssetModalOpen(false)} />
+        <AddAssetForm initialData={editingAsset} onSuccess={() => setIsAssetModalOpen(false)} />
       </Modal>
 
       <Modal

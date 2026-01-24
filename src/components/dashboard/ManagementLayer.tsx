@@ -51,13 +51,6 @@ export function ManagementLayer() {
 
                     <div className="flex items-center gap-2">
                         <button
-                            onClick={() => window.dispatchEvent(new CustomEvent('open-settings-modal'))}
-                            className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-all"
-                            title="Configurações do Projeto"
-                        >
-                            <Settings size={20} />
-                        </button>
-                        <button
                             onClick={() => {
                                 const event = activeTab === 'expenses' ? 'open-expense-modal' :
                                     activeTab === 'tasks' ? 'open-task-modal' :
@@ -78,18 +71,18 @@ export function ManagementLayer() {
                     <table className="w-full text-sm text-left">
                         <thead className="bg-slate-50/50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
                             <tr>
-                                <th className="px-6 py-4 font-bold text-slate-400 uppercase tracking-widest text-[9px]">
+                                <th className="px-6 py-4 font-bold text-slate-400 uppercase tracking-widest text-[9px] bg-[#2d2d2d]">
                                     {activeTab === 'suppliers' ? 'Fornecedor / Contato' : 'Nome / Item'}
                                 </th>
-                                <th className="px-6 py-4 font-bold text-slate-400 uppercase tracking-widest text-[9px]">Categoria</th>
-                                <th className="px-6 py-4 font-bold text-slate-400 uppercase tracking-widest text-[9px]">
+                                <th className="px-6 py-4 font-bold text-slate-400 uppercase tracking-widest text-[9px] bg-[#2d2d2d]">Categoria</th>
+                                <th className="px-6 py-4 font-bold text-slate-400 uppercase tracking-widest text-[9px] bg-[#2d2d2d]">
                                     {activeTab === 'expenses' ? 'Vencimento' : activeTab === 'tasks' ? 'Início' : 'Observações'}
                                 </th>
-                                <th className="px-6 py-4 font-bold text-slate-400 uppercase tracking-widest text-[9px] text-right">
+                                <th className="px-6 py-4 font-bold text-slate-400 uppercase tracking-widest text-[9px] text-right bg-[#2d2d2d]">
                                     {activeTab === 'expenses' ? 'Valor' : activeTab === 'tasks' ? 'Previsão Fim' : ''}
                                 </th>
-                                <th className="px-6 py-4 font-bold text-slate-400 uppercase tracking-widest text-[9px] text-center">Status</th>
-                                <th className="px-6 py-4 font-bold text-slate-400 uppercase tracking-widest text-[9px] text-right">Ações</th>
+                                <th className="px-6 py-4 font-bold text-slate-400 uppercase tracking-widest text-[9px] text-center bg-[#2d2d2d]">Status</th>
+                                <th className="px-6 py-4 font-bold text-slate-400 uppercase tracking-widest text-[9px] text-right bg-[#2d2d2d]">Ações</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
@@ -130,8 +123,8 @@ export function ManagementLayer() {
                                                     onChange={(e) => updateExpense(exp.id, { status: e.target.value as any })}
                                                     className={clsx(
                                                         "px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-tighter cursor-pointer outline-none border-none transition-all",
-                                                        exp.status === 'Paid' ? "bg-emerald-100 text-emerald-700" :
-                                                            exp.status === 'Deposit' ? "bg-blue-100 text-blue-700" : "bg-amber-100 text-amber-700"
+                                                        exp.status === 'Paid' ? "bg-[#98e342]/10 text-[#98e342] border border-[#98e342]/20" :
+                                                            exp.status === 'Deposit' ? "bg-[#67d8ef]/10 text-[#67d8ef] border border-[#67d8ef]/20" : "bg-[#fce566]/10 text-[#fce566] border border-[#fce566]/20"
                                                     )}
                                                 >
                                                     <option value="Paid">Pago</option>
@@ -180,9 +173,9 @@ export function ManagementLayer() {
                                                     onChange={(e) => updateTask(task.id, { status: e.target.value as any })}
                                                     className={clsx(
                                                         "px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-tighter cursor-pointer outline-none border-none transition-all",
-                                                        task.status === 'Completed' ? "bg-emerald-100 text-emerald-700" :
-                                                            task.status === 'In Progress' ? "bg-amber-100 text-amber-700" :
-                                                                task.status === 'Blocked' ? "bg-rose-100 text-rose-700" : "bg-slate-100 text-slate-700"
+                                                        task.status === 'Completed' ? "bg-[#98e342]/10 text-[#98e342] border border-[#98e342]/20" :
+                                                            task.status === 'In Progress' ? "bg-[#fce566]/10 text-[#fce566] border border-[#fce566]/20" :
+                                                                task.status === 'Blocked' ? "bg-[#f92672]/10 text-[#f92672] border border-[#f92672]/20" : "bg-[#49483e]/10 text-[#9a9a9a] border border-[#49483e]/20"
                                                     )}
                                                 >
                                                     <option value="Pending">Pendente</option>

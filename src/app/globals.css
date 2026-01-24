@@ -1,13 +1,27 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #1c1c1c;
+  --foreground: #c5c8c6;
+  --card: #2d2d2d;
+  --border: #3e3d32;
+  --primary: #67d8ef;
+  --secondary: #9a9a9a;
+  --success: #98e342;
+  --warning: #fce566;
+  --error: #f92672;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-border-monokai: var(--border);
+  --color-monokai-cyan: var(--primary);
+  --color-monokai-gray: var(--secondary);
+  --color-monokai-green: var(--success);
+  --color-monokai-yellow: var(--warning);
+  --color-monokai-red: var(--error);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -27,20 +41,19 @@
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #e2e8f0;
+    background: #3e3d32;
     border-radius: 10px;
   }
 
   .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #1e293b;
+    background: #3e3d32;
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Force dark mode by default for Monokai Dimmed */
+:root {
+  --background: #1c1c1c;
+  --foreground: #c5c8c6;
 }
 
 body {

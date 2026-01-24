@@ -16,13 +16,29 @@ export function AddSupplierForm({ onSuccess, initialData }: AddSupplierFormProps
     const [isLoading, setIsLoading] = useState(false);
 
     const [name, setName] = useState(initialData?.name || '');
-    const [phone1, setPhone1] = useState(initialData?.phone1 || '(27) ');
+    const [phone1, setPhone1] = useState(initialData?.phone1 || '');
     const [phone2, setPhone2] = useState(initialData?.phone2 || '');
     const [email, setEmail] = useState(initialData?.email || '');
     const [website, setWebsite] = useState(initialData?.website || '');
     const [category, setCategory] = useState<Category>(initialData?.category || CATEGORIES[0]);
     const [rating, setRating] = useState(initialData?.rating || 0);
     const [notes, setNotes] = useState(initialData?.notes || '');
+
+    const formatPhone = (value: string) => {
+        const numbers = value.replace(/\D/g, '');
+        if (numbers.length <= 11) {
+            let masked = numbers;
+            if (numbers.length > 2) masked = `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`;
+            if (numbers.length > 7) masked = `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7, 11)}`;
+            return masked;
+        }
+        return value.slice(0, 15); // (##) #####-####
+    };
+
+    const handlePhoneChange = (setter: (v: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        const formatted = formatPhone(e.target.value);
+        if (formatted.length <= 15) setter(formatted);
+    };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -77,8 +93,9 @@ export function AddSupplierForm({ onSuccess, initialData }: AddSupplierFormProps
                         <input
                             required
                             value={phone1}
-                            onChange={(e) => setPhone1(e.target.value)}
+                            onChange={handlePhoneChange(setPhone1)}
                             placeholder="(27) 99999-9999"
+                            maxLength={15}
                             className="w-full p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border-none focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm font-bold"
                         />
                     </div>
@@ -88,8 +105,9 @@ export function AddSupplierForm({ onSuccess, initialData }: AddSupplierFormProps
                         </label>
                         <input
                             value={phone2}
-                            onChange={(e) => setPhone2(e.target.value)}
-                            placeholder="(27) 99999-9999"
+                            onChange={handlePhoneChange(setPhone2)}
+                            placeholder="(##) #####-####"
+                            maxLength={15}
                             className="w-full p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border-none focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm font-bold"
                         />
                     </div>

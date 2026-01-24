@@ -27,6 +27,7 @@ interface ProjectContextType {
     getBudgetStats: () => { totalSpent: number; remaining: number };
     toggleAssetStatus: (id: string) => void;
     addAsset: (asset: Omit<Asset, 'id'>) => void;
+    updateAsset: (id: string, asset: Partial<Asset>) => void;
     deleteAsset: (id: string) => void;
     addProgressNote: (note: string) => void;
     updateProgressNote: (date: string, note: string) => void;
@@ -146,6 +147,13 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     const addAsset = (asset: Omit<Asset, 'id'>) => {
         const newAsset: Asset = { ...asset, id: crypto.randomUUID() };
         setData(prev => ({ ...prev, assets: [...prev.assets, newAsset] }));
+    };
+
+    const updateAsset = (id: string, updates: Partial<Asset>) => {
+        setData(prev => ({
+            ...prev,
+            assets: prev.assets.map(asset => asset.id === id ? { ...asset, ...updates } : asset)
+        }));
     };
 
     const deleteAsset = (id: string) => {
@@ -286,6 +294,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
             getBudgetStats,
             toggleAssetStatus,
             addAsset,
+            updateAsset,
             deleteAsset,
             addProgressNote,
             updateProgressNote,

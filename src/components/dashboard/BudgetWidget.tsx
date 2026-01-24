@@ -1,15 +1,13 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Card } from '@/components/ui/Card';
 import { useProject } from '@/context/ProjectContext';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
 export function BudgetWidget() {
     const { data, getBudgetStats } = useProject();
     const { totalSpent, remaining } = getBudgetStats();
 
-    // Differentiate Paid vs Pending
     const paidAmount = data.expenses
         .filter(e => e.status === 'Paid')
         .reduce((sum, e) => sum + e.amount, 0);
@@ -18,71 +16,77 @@ export function BudgetWidget() {
         .filter(e => e.status !== 'Paid')
         .reduce((sum, e) => sum + e.amount, 0);
 
-    const chartData = useMemo(() => [
-        { name: 'Pago', value: paidAmount, color: '#e11d48' }, // Rose 600
-        { name: 'Pendente', value: pendingAmount, color: '#eab308' }, // Amber  Yellow
-        { name: 'Disponível', value: remaining > 0 ? remaining : 0, color: '#10b981' } // Emerald 500
-    ], [paidAmount, pendingAmount, remaining]);
+    const totalBudget = data.project.totalBudget || 1; // Prevent div by zero
+    const percentageUsed = Math.round((totalSpent / totalBudget) * 100);
 
-    const percentageUsed = Math.round((totalSpent / data.project.totalBudget) * 100);
+    // Bar heights in percentage
+    const paidHeight = (paidAmount / totalBudget) * 100;
+    const pendingHeight = (pendingAmount / totalBudget) * 100;
+    const availableHeight = Math.max(0, (remaining / totalBudget) * 100);
 
     return (
-        <Card title="Status Financeiro" className="h-[600px] flex flex-col overflow-hidden">
-            <div className="flex-1 flex flex-col lg:flex-row items-center justify-between gap-12 px-8">
-                {/* Visual Area */}
-                <div className="w-full lg:w-3/5 h-[350px] relative">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                            <Pie
-                                data={chartData}
-                                cx="50%"
-                                cy="50%"
-                                innerRadius={90}
-                                outerRadius={130}
-                                paddingAngle={8}
-                                dataKey="value"
-                                stroke="none"
-                            >
-                                {chartData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={entry.color} />
-                                ))}
-                            </Pie>
-                            <Tooltip
-                                contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
-                                formatter={(value: number | undefined) => `R$ ${(value || 0).toLocaleString()}`}
+        <Card title="Status Financeiro" className="h-[600px] flex flex-col overflow-hidden bg-[#1c1c1c] text-[#c5c8c6]">
+            <div className="flex-1 flex flex-col lg:flex-row items-center justify-around gap-8 px-6 py-4">
+
+                {/* Visual Area - Vertical Thermometer */}
+                <div className="h-full py-8 flex items-center justify-center">
+                    <div className="relative w-28 h-full flex flex-col items-center">
+                        {/* The "Thermometer" Bar */}
+                        <div className="w-16 h-full bg-[#2d2d2d] rounded-full overflow-hidden flex flex-col-reverse border-4 border-[#3e3d32] shadow-inner">
+                            {/* Paid Segment */}
+                            <div
+                                style={{ height: `${paidHeight}%` }}
+                                className="w-full bg-[#f92672] transition-all duration-700 shadow-lg shadow-[#f92672]/20"
+                                title={`Pago: R$ ${paidAmount.toLocaleString()}`}
                             />
-                        </PieChart>
-                    </ResponsiveContainer>
-                    <div className="absolute inset-0 flex items-center justify-center flex-col pointer-events-none">
-                        <span className="text-4xl font-black text-slate-900 dark:text-white">{percentageUsed}%</span>
-                        <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Utilizado</span>
+                            {/* Pending Segment */}
+                            <div
+                                style={{ height: `${pendingHeight}%` }}
+                                className="w-full bg-[#fce566] transition-all duration-700 shadow-lg shadow-[#fce566]/10 border-t border-white/10"
+                                title={`Pendente: R$ ${pendingAmount.toLocaleString()}`}
+                            />
+                            {/* Empty space represented by background */}
+                        </div>
+
+                        {/* Floating Label - Centered on bar with translucency */}
+                        <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 flex flex-col items-center bg-[#2d2d2d]/80 backdrop-blur-md px-4 py-3 rounded-2xl shadow-2xl border border-white/10 z-10 transition-transform hover:scale-110">
+                            <span className="text-3xl font-black text-white leading-none tracking-tighter">{percentageUsed}%</span>
+                            <span className="text-[9px] font-black text-[#9a9a9a] uppercase tracking-widest mt-1">Utilizado</span>
+                        </div>
                     </div>
                 </div>
 
                 {/* Stats Area */}
-                <div className="w-full lg:w-2/5 flex flex-col gap-6">
-                    <div className="space-y-4">
-                        <div className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-900/10 border border-rose-100 dark:border-rose-900/20">
-                            <span className="block text-[10px] font-black text-rose-500 uppercase tracking-widest mb-1">Pago</span>
-                            <span className="text-xl font-bold text-slate-800 dark:text-slate-200">R$ {paidAmount.toLocaleString()}</span>
+                <div className="w-full lg:w-1/2 flex flex-col gap-4">
+                    <div className="grid grid-cols-1 gap-3">
+                        <div className="group p-4 rounded-2xl bg-[#2d2d2d] border border-[#3e3d32] transition-all hover:scale-[1.02]">
+                            <div className="flex justify-between items-center mb-1">
+                                <span className="text-[10px] font-black text-[#f92672] uppercase tracking-widest">Pago</span>
+                                <span className="text-[9px] font-bold text-[#f92672]/50">{Math.round(paidHeight)}%</span>
+                            </div>
+                            <span className="text-xl font-bold text-white">R$ {paidAmount.toLocaleString()}</span>
                         </div>
-                        <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/20">
-                            <span className="block text-[10px] font-black text-amber-500 uppercase tracking-widest mb-1">Pendente</span>
-                            <span className="text-xl font-bold text-slate-800 dark:text-slate-200">R$ {pendingAmount.toLocaleString()}</span>
+
+                        <div className="group p-4 rounded-2xl bg-[#2d2d2d] border border-[#3e3d32] transition-all hover:scale-[1.02]">
+                            <div className="flex justify-between items-center mb-1">
+                                <span className="text-[10px] font-black text-[#fce566] uppercase tracking-widest">Pendente</span>
+                                <span className="text-[9px] font-bold text-[#fce566]/50">{Math.round(pendingHeight)}%</span>
+                            </div>
+                            <span className="text-xl font-bold text-white">R$ {pendingAmount.toLocaleString()}</span>
                         </div>
-                        <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900/20">
-                            <span className="block text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1">Disponível</span>
-                            <span className="text-xl font-bold text-emerald-600">R$ {remaining.toLocaleString()}</span>
+
+                        <div className="group p-4 rounded-2xl bg-[#2d2d2d] border border-[#3e3d32] transition-all hover:scale-[1.02]">
+                            <div className="flex justify-between items-center mb-1">
+                                <span className="text-[10px] font-black text-[#98e342] uppercase tracking-widest">Disponível</span>
+                                <span className="text-[9px] font-bold text-[#98e342]/50">{Math.round(availableHeight)}%</span>
+                            </div>
+                            <span className="text-xl font-bold text-[#98e342]">R$ {remaining.toLocaleString()}</span>
                         </div>
                     </div>
 
-                    <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
-                        <div className="flex justify-between items-end">
-                            <div>
-                                <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Orçamento Total</span>
-                                <span className="text-2xl font-black text-slate-900 dark:text-white">R$ {data.project.totalBudget.toLocaleString()}</span>
-                            </div>
-                        </div>
+                    <div className="mt-2 pt-4 border-t border-[#3e3d32]">
+                        <span className="block text-[10px] font-black text-[#9a9a9a] uppercase tracking-widest mb-1">Orçamento Total</span>
+                        <span className="text-2xl font-black text-[#67d8ef]">R$ {data.project.totalBudget.toLocaleString()}</span>
                     </div>
                 </div>
             </div>
