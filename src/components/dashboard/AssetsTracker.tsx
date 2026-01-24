@@ -21,7 +21,7 @@ export function AssetsTracker() {
                     data.assets.map((asset) => (
                         <div
                             key={asset.id}
-                            className="flex items-center justify-between p-3 rounded-2xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:shadow-md transition-all group"
+                            className="flex items-center justify-between p-3 rounded-2xl bg-card border border-border hover:shadow-md transition-all group"
                         >
                             <div className="flex items-center gap-3">
                                 <button
@@ -29,8 +29,8 @@ export function AssetsTracker() {
                                     className={clsx(
                                         "w-10 h-10 rounded-xl flex items-center justify-center border-2 transition-all",
                                         asset.status === 'Delivered'
-                                            ? "bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-500/20"
-                                            : "border-slate-200 dark:border-slate-700 text-transparent hover:border-emerald-400"
+                                            ? "bg-success border-success text-success-foreground shadow-lg shadow-success/20"
+                                            : "border-border text-transparent hover:border-success"
                                     )}
                                 >
                                     <CheckCircle2 size={24} className={asset.status === 'Delivered' ? 'opacity-100' : 'opacity-0'} />
@@ -38,14 +38,14 @@ export function AssetsTracker() {
                                 <div>
                                     <h4 className={clsx(
                                         "font-bold text-sm transition-all",
-                                        asset.status === 'Delivered' ? "text-slate-400 line-through decoration-emerald-500/30" : "text-slate-700 dark:text-slate-200"
+                                        asset.status === 'Delivered' ? "text-muted-foreground line-through decoration-success/30" : "text-foreground"
                                     )}>
                                         {asset.name}
                                     </h4>
                                     <div className="flex flex-col gap-0.5 mt-0.5">
                                         <span className={clsx(
                                             "text-[10px] font-black uppercase tracking-widest",
-                                            asset.status === 'Delivered' ? "text-emerald-500" : "text-slate-400"
+                                            asset.status === 'Delivered' ? "text-success" : "text-muted-foreground"
                                         )}>
                                             {asset.status === 'Delivered' ? 'Entregue' : 'Comprado / Em Rota'}
                                         </span>
@@ -87,11 +87,11 @@ export function AssetsTracker() {
 
             <button
                 onClick={() => window.dispatchEvent(new CustomEvent('open-asset-modal'))}
-                className="w-full mt-6 py-4 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl text-slate-400 hover:border-blue-400 hover:text-blue-500 hover:bg-blue-50/50 transition-all font-bold text-xs flex items-center justify-center gap-2 group"
+                className="w-full mt-6 py-4 border-2 border-dashed border-border rounded-2xl text-muted-foreground hover:border-primary hover:text-primary hover:bg-primary/5 transition-all font-bold text-xs flex items-center justify-center gap-2 group"
             >
                 <Plus size={16} className="group-hover:rotate-90 transition-transform" />
                 Adicionar Item para Rastrear
             </button>
-        </Card>
+        </Card >
     );
 }

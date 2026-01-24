@@ -1,29 +1,96 @@
 @import "tailwindcss";
 
 :root {
-  --background: #1c1c1c;
-  --foreground: #c5c8c6;
-  --card: #2d2d2d;
-  --border: #3e3d32;
-  --primary: #67d8ef;
-  --secondary: #9a9a9a;
-  --success: #98e342;
-  --warning: #fce566;
-  --error: #f92672;
+  /* Cosmic/Midnight Palette */
+  --background: #0f1117;
+  --foreground: #e2e8f0;
+
+  --card: #1e212b;
+  --card-foreground: #e2e8f0;
+
+  --popover: #1e212b;
+  --popover-foreground: #e2e8f0;
+
+  --primary: #6366f1;
+  /* Indigo */
+  --primary-foreground: #ffffff;
+
+  --secondary: #292d3e;
+  --secondary-foreground: #e2e8f0;
+
+  --muted: #0f1117;
+  /* Darker than card */
+  --muted-foreground: #94a3b8;
+
+  --accent: #292d3e;
+  --accent-foreground: #e2e8f0;
+
+  --destructive: #f43f5e;
+  /* Rose */
+  --destructive-foreground: #ffffff;
+
+  --border: #2f3342;
+  --input: #2f3342;
+  --ring: #6366f1;
+
+  --radius: 0.75rem;
+
+  /* Custom Status Colors */
+  --status-success: #10b981;
+  /* Emerald */
+  --status-warning: #f59e0b;
+  /* Amber */
+  --status-danger: #f43f5e;
+  /* Rose */
+  --status-info: #3b82f6;
+  /* Blue */
+  --status-neutral: #64748b;
+  /* Slate */
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
   --color-card: var(--card);
-  --color-border-monokai: var(--border);
-  --color-monokai-cyan: var(--primary);
-  --color-monokai-gray: var(--secondary);
-  --color-monokai-green: var(--success);
-  --color-monokai-yellow: var(--warning);
-  --color-monokai-red: var(--error);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Semantic Status Colors */
+  --color-success: var(--status-success);
+  --color-warning: var(--status-warning);
+  --color-danger: var(--status-danger);
+  --color-info: var(--status-info);
+  --color-neutral: var(--status-neutral);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
 }
 
 @theme {
@@ -32,8 +99,8 @@
 
 @layer utilities {
   .custom-scrollbar::-webkit-scrollbar {
-    height: 4px;
-    width: 4px;
+    height: 6px;
+    width: 6px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-track {
@@ -41,23 +108,17 @@
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #3e3d32;
-    border-radius: 10px;
+    background: var(--border);
+    border-radius: 99px;
   }
 
-  .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #3e3d32;
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--muted-foreground);
   }
-}
-
-/* Force dark mode by default for Monokai Dimmed */
-:root {
-  --background: #1c1c1c;
-  --foreground: #c5c8c6;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
 }

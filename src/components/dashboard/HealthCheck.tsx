@@ -27,9 +27,9 @@ export function HealthCheck() {
             {/* Financial Health Card */}
             <Card className={clsx(
                 "relative overflow-hidden transition-all duration-300 border-l-4",
-                financialStatus === 'good' && "border-l-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/10",
-                financialStatus === 'warning' && "border-l-amber-500 bg-amber-50/50 dark:bg-amber-900/10",
-                financialStatus === 'critical' && "border-l-rose-500 bg-rose-50/50 dark:bg-rose-900/10"
+                financialStatus === 'good' && "border-l-success bg-success/10",
+                financialStatus === 'warning' && "border-l-warning bg-warning/10",
+                financialStatus === 'critical' && "border-l-danger bg-danger/10"
             )}>
                 <div className="flex justify-between items-start">
                     <div>
@@ -42,9 +42,9 @@ export function HealthCheck() {
                     </div>
                     <div className={clsx(
                         "p-2 rounded-full",
-                        financialStatus === 'good' && "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30",
-                        financialStatus === 'warning' && "bg-amber-100 text-amber-600 dark:bg-amber-900/30",
-                        financialStatus === 'critical' && "bg-rose-100 text-rose-600 dark:bg-rose-900/30"
+                        financialStatus === 'good' && "bg-success/20 text-success",
+                        financialStatus === 'warning' && "bg-warning/20 text-warning",
+                        financialStatus === 'critical' && "bg-danger/20 text-danger"
                     )}>
                         {financialStatus === 'good' ? <TrendingDown size={24} /> : <TrendingUp size={24} />}
                     </div>
@@ -57,7 +57,7 @@ export function HealthCheck() {
                     <div
                         className={clsx(
                             "h-full transition-all duration-1000",
-                            financialStatus === 'good' ? "bg-emerald-500" : financialStatus === 'warning' ? "bg-amber-500" : "bg-rose-500"
+                            financialStatus === 'good' ? "bg-success" : financialStatus === 'warning' ? "bg-warning" : "bg-danger"
                         )}
                         style={{ width: `${Math.min(budgetUsage, 100)}%` }}
                     />
@@ -67,9 +67,9 @@ export function HealthCheck() {
             {/* Timeline Health Card */}
             <Card className={clsx(
                 "relative overflow-hidden transition-all duration-300 border-l-4",
-                timelineStatus === 'good' && "border-l-blue-500 bg-blue-50/50 dark:bg-blue-900/10",
-                timelineStatus === 'warning' && "border-l-amber-500 bg-amber-50/50 dark:bg-amber-900/10",
-                timelineStatus === 'critical' && "border-l-orange-500 bg-orange-50/50 dark:bg-orange-900/10"
+                timelineStatus === 'good' && "border-l-info bg-info/10",
+                timelineStatus === 'warning' && "border-l-warning bg-warning/10",
+                timelineStatus === 'critical' && "border-l-danger bg-danger/10"
             )}>
                 <div className="flex justify-between items-start">
                     <div>
@@ -82,9 +82,9 @@ export function HealthCheck() {
                     </div>
                     <div className={clsx(
                         "p-2 rounded-full",
-                        timelineStatus === 'good' && "bg-blue-100 text-blue-600 dark:bg-blue-900/30",
-                        timelineStatus === 'warning' && "bg-amber-100 text-amber-600 dark:bg-amber-900/30",
-                        timelineStatus === 'critical' && "bg-orange-100 text-orange-600 dark:bg-orange-900/30"
+                        timelineStatus === 'good' && "bg-info/20 text-info",
+                        timelineStatus === 'warning' && "bg-warning/20 text-warning",
+                        timelineStatus === 'critical' && "bg-danger/20 text-danger"
                     )}>
                         {timelineStatus === 'good' ? <CheckCircle2 size={24} /> : timelineStatus === 'warning' ? <Clock size={24} /> : <AlertCircle size={24} />}
                     </div>
@@ -104,7 +104,7 @@ export function HealthCheck() {
                             key={i}
                             className={clsx(
                                 "h-1 flex-1 rounded-full",
-                                i <= (5 - delayedTasks) ? "bg-blue-400" : "bg-slate-200 dark:bg-slate-700"
+                                i <= (5 - delayedTasks) ? "bg-info" : "bg-secondary"
                             )}
                         />
                     ))}

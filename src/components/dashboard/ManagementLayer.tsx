@@ -66,23 +66,23 @@ export function ManagementLayer() {
                 </div>
             </div>
 
-            <Card className="p-0 overflow-hidden border-none shadow-xl bg-white dark:bg-slate-900">
+            <Card className="p-0 overflow-hidden border-none shadow-xl bg-card">
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm text-left">
                         <thead className="bg-slate-50/50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
                             <tr>
-                                <th className="px-6 py-4 font-bold text-slate-400 uppercase tracking-widest text-[9px] bg-[#2d2d2d]">
+                                <th className="px-6 py-4 font-bold text-muted-foreground uppercase tracking-widest text-[9px] bg-secondary border-b border-border">
                                     {activeTab === 'suppliers' ? 'Fornecedor / Contato' : 'Nome / Item'}
                                 </th>
-                                <th className="px-6 py-4 font-bold text-slate-400 uppercase tracking-widest text-[9px] bg-[#2d2d2d]">Categoria</th>
-                                <th className="px-6 py-4 font-bold text-slate-400 uppercase tracking-widest text-[9px] bg-[#2d2d2d]">
+                                <th className="px-6 py-4 font-bold text-muted-foreground uppercase tracking-widest text-[9px] bg-secondary border-b border-border">Categoria</th>
+                                <th className="px-6 py-4 font-bold text-muted-foreground uppercase tracking-widest text-[9px] bg-secondary border-b border-border">
                                     {activeTab === 'expenses' ? 'Vencimento' : activeTab === 'tasks' ? 'Início' : 'Observações'}
                                 </th>
-                                <th className="px-6 py-4 font-bold text-slate-400 uppercase tracking-widest text-[9px] text-right bg-[#2d2d2d]">
+                                <th className="px-6 py-4 font-bold text-muted-foreground uppercase tracking-widest text-[9px] text-right bg-secondary border-b border-border">
                                     {activeTab === 'expenses' ? 'Valor' : activeTab === 'tasks' ? 'Previsão Fim' : ''}
                                 </th>
-                                <th className="px-6 py-4 font-bold text-slate-400 uppercase tracking-widest text-[9px] text-center bg-[#2d2d2d]">Status</th>
-                                <th className="px-6 py-4 font-bold text-slate-400 uppercase tracking-widest text-[9px] text-right bg-[#2d2d2d]">Ações</th>
+                                <th className="px-6 py-4 font-bold text-muted-foreground uppercase tracking-widest text-[9px] text-center bg-secondary border-b border-border">Status</th>
+                                <th className="px-6 py-4 font-bold text-muted-foreground uppercase tracking-widest text-[9px] text-right bg-secondary border-b border-border">Ações</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
@@ -122,9 +122,9 @@ export function ManagementLayer() {
                                                     value={exp.status}
                                                     onChange={(e) => updateExpense(exp.id, { status: e.target.value as any })}
                                                     className={clsx(
-                                                        "px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-tighter cursor-pointer outline-none border-none transition-all",
-                                                        exp.status === 'Paid' ? "bg-[#98e342]/10 text-[#98e342] border border-[#98e342]/20" :
-                                                            exp.status === 'Deposit' ? "bg-[#67d8ef]/10 text-[#67d8ef] border border-[#67d8ef]/20" : "bg-[#fce566]/10 text-[#fce566] border border-[#fce566]/20"
+                                                        "px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-tighter cursor-pointer outline-none border transition-all",
+                                                        exp.status === 'Paid' ? "bg-success/10 text-success border-success/30" :
+                                                            exp.status === 'Deposit' ? "bg-info/10 text-info border-info/30" : "bg-warning/10 text-warning border-warning/30"
                                                     )}
                                                 >
                                                     <option value="Paid">Pago</option>
@@ -172,10 +172,10 @@ export function ManagementLayer() {
                                                     value={task.status}
                                                     onChange={(e) => updateTask(task.id, { status: e.target.value as any })}
                                                     className={clsx(
-                                                        "px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-tighter cursor-pointer outline-none border-none transition-all",
-                                                        task.status === 'Completed' ? "bg-[#98e342]/10 text-[#98e342] border border-[#98e342]/20" :
-                                                            task.status === 'In Progress' ? "bg-[#fce566]/10 text-[#fce566] border border-[#fce566]/20" :
-                                                                task.status === 'Blocked' ? "bg-[#f92672]/10 text-[#f92672] border border-[#f92672]/20" : "bg-[#49483e]/10 text-[#9a9a9a] border border-[#49483e]/20"
+                                                        "px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-tighter cursor-pointer outline-none border transition-all",
+                                                        task.status === 'Completed' ? "bg-success/10 text-success border-success/30" :
+                                                            task.status === 'In Progress' ? "bg-warning/10 text-warning border-warning/30" :
+                                                                task.status === 'Blocked' ? "bg-danger/10 text-danger border-danger/30" : "bg-muted text-muted-foreground border-border"
                                                     )}
                                                 >
                                                     <option value="Pending">Pendente</option>

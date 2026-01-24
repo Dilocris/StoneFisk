@@ -92,10 +92,10 @@ export function GanttWorkspace() {
             const left = ((effectiveStart - start.getTime()) / (1000 * 60 * 60 * 24 * totalDays)) * 100;
             const width = ((effectiveEnd - effectiveStart) / (1000 * 60 * 60 * 24 * totalDays)) * 100;
 
-            let color = 'bg-[#49483e]'; // Monokai Muted Gray
-            if (task.status === 'Completed') color = 'bg-[#98e342]'; // Monokai Green
-            if (task.status === 'Blocked') color = 'bg-[#f92672]'; // Monokai Red
-            if (task.status === 'In Progress') color = 'bg-[#fce566] text-black'; // Monokai Yellow
+            let color = 'bg-neutral';
+            if (task.status === 'Completed') color = 'bg-success';
+            if (task.status === 'Blocked') color = 'bg-danger';
+            if (task.status === 'In Progress') color = 'bg-warning text-black';
 
             const isOverdue = tEnd < today && task.status !== 'Completed';
 
@@ -143,31 +143,31 @@ export function GanttWorkspace() {
     };
 
     return (
-        <Card id="gantt-section" className="mb-8 border-none shadow-xl bg-white dark:bg-slate-900 overflow-hidden">
+        <Card id="gantt-section" className="mb-8 border-none shadow-xl bg-card overflow-hidden">
             <div className="flex flex-col md:flex-row justify-between items-center mb-6 px-4 gap-4">
                 <div className="flex items-center gap-4">
-                    <h2 className="text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                        <CalendarIcon className="text-blue-500" size={20} />
+                    <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
+                        <CalendarIcon className="text-primary" size={20} />
                         Cronograma
                     </h2>
 
-                    <div className="flex items-center bg-[#2d2d2d] rounded-2xl p-1.5 gap-2 shadow-sm border border-[#3e3d32]">
+                    <div className="flex items-center bg-secondary rounded-2xl p-1.5 gap-2 shadow-sm border border-border">
                         <button
                             onClick={handlePrev}
-                            className="p-2 hover:bg-[#3e3d32] rounded-xl text-[#67d8ef] transition-all hover:scale-110 active:scale-95"
+                            className="p-2 hover:bg-muted rounded-xl text-primary transition-all hover:scale-110 active:scale-95"
                             title="7 dias para trás"
                         >
                             <ChevronLeft size={20} strokeWidth={3} />
                         </button>
                         <button
                             onClick={() => setViewOffset(0)}
-                            className="px-4 py-1.5 text-[11px] font-black uppercase tracking-widest text-[#9a9a9a] hover:text-[#67d8ef] transition-all border-x border-[#3e3d32]"
+                            className="px-4 py-1.5 text-[11px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary transition-all border-x border-border"
                         >
                             Hoje
                         </button>
                         <button
                             onClick={handleNext}
-                            className="p-2 hover:bg-[#3e3d32] rounded-xl text-[#67d8ef] transition-all hover:scale-110 active:scale-95"
+                            className="p-2 hover:bg-muted rounded-xl text-primary transition-all hover:scale-110 active:scale-95"
                             title="7 dias para frente"
                         >
                             <ChevronRight size={20} strokeWidth={3} />
@@ -200,24 +200,24 @@ export function GanttWorkspace() {
                     )}
                 </div>
 
-                <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-tight text-[#9a9a9a]">
-                    <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#49483e]" /> Pendente</div>
-                    <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#fce566]" /> Em Curso</div>
-                    <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#98e342]" /> Pronto</div>
-                    <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#f92672]" /> Bloqueado</div>
-                    <div className="flex items-center gap-1 ml-2"><span className="w-3 h-3 rounded-sm border-2 border-[#f92672] animate-pulse" /> Atrasado</div>
+                <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-tight text-muted-foreground">
+                    <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-neutral" /> Pendente</div>
+                    <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-warning" /> Em Curso</div>
+                    <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-success" /> Pronto</div>
+                    <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-danger" /> Bloqueado</div>
+                    <div className="flex items-center gap-1 ml-2"><span className="w-3 h-3 rounded-sm border-2 border-danger animate-pulse" /> Atrasado</div>
                 </div>
             </div>
 
             <div className="relative overflow-hidden pb-6">
                 <div className="relative">
                     {/* Month Header */}
-                    <div className="flex border-b border-slate-100 dark:border-slate-800 mb-0 bg-slate-50/50 dark:bg-slate-800/50 rounded-t-lg">
+                    <div className="flex border-b border-border mb-0 bg-muted/50 rounded-t-lg">
                         {timelineGrid.map((m, i) => (
                             <div
                                 key={i}
                                 style={{ width: m.width }}
-                                className="text-center py-2 text-[10px] font-black uppercase tracking-widest text-[#9a9a9a] border-r border-[#3e3d32] last:border-0"
+                                className="text-center py-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground border-r border-border last:border-0"
                             >
                                 {m.name}
                             </div>
@@ -225,14 +225,14 @@ export function GanttWorkspace() {
                     </div>
 
                     {/* Day Numbers Header */}
-                    <div className="flex border-b border-slate-100 dark:border-slate-800 mb-6 bg-white dark:bg-slate-900">
+                    <div className="flex border-b border-border mb-6 bg-card">
                         {dayLines.map((d, i) => (
                             <div
                                 key={i}
                                 style={{ width: d.width }}
                                 className={clsx(
-                                    "text-center py-1 text-[8px] font-bold border-r border-slate-50 dark:border-slate-800 last:border-0 transition-colors",
-                                    d.isToday ? "bg-blue-500 text-white" : d.isWeekend ? "bg-slate-50/50 dark:bg-slate-800/30 text-slate-500" : "text-slate-400"
+                                    "text-center py-1 text-[8px] font-bold border-r border-border last:border-0 transition-colors",
+                                    d.isToday ? "bg-primary text-primary-foreground" : d.isWeekend ? "bg-muted/50 text-muted-foreground" : "text-muted-foreground"
                                 )}
                             >
                                 {d.day}
