@@ -40,20 +40,20 @@ export function BudgetWidget() {
                             {/* Paid Segment */}
                             <div
                                 style={{ height: `${paidHeight}%` }}
-                                className="w-full bg-success transition-all duration-700 shadow-lg shadow-success/20"
+                                className="w-full bg-success transition-[height] duration-300 ease-out shadow-lg shadow-success/20"
                                 title={`Pago: R$ ${paidAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                             />
                             {/* Pending Segment */}
                             <div
                                 style={{ height: `${pendingHeight}%` }}
-                                className="w-full bg-warning transition-all duration-700 shadow-lg shadow-warning/10 border-t border-white/10"
+                                className="w-full bg-warning transition-[height] duration-300 ease-out shadow-lg shadow-warning/10 border-t border-white/10"
                                 title={`Pendente: R$ ${pendingAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                             />
                             {/* Empty space represented by background */}
                         </div>
 
                         {/* Floating Label - Centered on bar with translucency */}
-                        <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 flex flex-col items-center bg-card/80 backdrop-blur-md px-4 py-3 rounded-2xl shadow-2xl border border-border z-10 transition-transform hover:scale-110">
+                        <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 flex flex-col items-center bg-card/80 backdrop-blur-md px-4 py-3 rounded-2xl shadow-2xl border border-border z-10 transition-transform duration-150 ease-out hover:scale-110">
                             <span className="text-3xl font-black text-foreground leading-none tracking-tighter">{percentageUsed}%</span>
                             <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mt-1">
                                 {isOverBudget ? 'Acima do OrÃ§amento' : 'Utilizado'}
@@ -65,7 +65,7 @@ export function BudgetWidget() {
                 {/* Stats Area */}
                 <div className="w-full lg:w-1/2 flex flex-col gap-4">
                     <div className="grid grid-cols-1 gap-3">
-                        <div className="group p-4 rounded-2xl bg-card border border-border transition-all hover:scale-[1.02]">
+                        <div className="group p-4 rounded-2xl bg-card border border-border transition-transform duration-150 ease-out hover:scale-[1.01]">
                             <div className="flex justify-between items-center mb-1">
                                 <span className="text-[10px] font-black text-success uppercase tracking-widest">Pago</span>
                                 <span className="text-[9px] font-bold text-success/50">{Math.round(paidHeight)}%</span>
@@ -73,7 +73,7 @@ export function BudgetWidget() {
                             <span className="text-xl font-bold text-foreground">R$ {paidAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                         </div>
 
-                        <div className="group p-4 rounded-2xl bg-card border border-border transition-all hover:scale-[1.02]">
+                        <div className="group p-4 rounded-2xl bg-card border border-border transition-transform duration-150 ease-out hover:scale-[1.01]">
                             <div className="flex justify-between items-center mb-1">
                                 <span className="text-[10px] font-black text-warning uppercase tracking-widest">Pendente</span>
                                 <span className="text-[9px] font-bold text-warning/50">{Math.round(pendingHeight)}%</span>
@@ -81,7 +81,7 @@ export function BudgetWidget() {
                             <span className="text-xl font-bold text-foreground">R$ {pendingAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                         </div>
 
-                        <div className="group p-4 rounded-2xl bg-card border border-border transition-all hover:scale-[1.02]">
+                        <div className="group p-4 rounded-2xl bg-card border border-border transition-transform duration-150 ease-out hover:scale-[1.01]">
                             <div className="flex justify-between items-center mb-1">
                                 <span className="text-[10px] font-black text-info uppercase tracking-widest">Disponível</span>
                                 <span className="text-[9px] font-bold text-info/50">{Math.round(availableHeight)}%</span>

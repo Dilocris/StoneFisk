@@ -136,7 +136,7 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
                             onChange={(e) => setCategory(e.target.value as Category)}
                             className="w-full p-3 bg-secondary text-foreground rounded-xl border border-input focus:ring-2 focus:ring-primary outline-none transition-all text-xs font-bold"
                         >
-                            {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                            {CATEGORIES.map(c => <option key={c} value={c} className="bg-secondary text-foreground">{c}</option>)}
                         </select>
                     </div>
 
@@ -145,8 +145,8 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
                         onChange={(e) => setSupplierId(e.target.value)}
                         className="w-full p-3 bg-secondary text-foreground rounded-xl border border-input focus:ring-2 focus:ring-primary outline-none transition-all text-xs font-bold"
                     >
-                        <option value="">Selecione o Fornecedor (Opcional)</option>
-                        {data.suppliers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                        <option value="" className="bg-secondary text-foreground">Selecione o Fornecedor (Opcional)</option>
+                        {data.suppliers.map(s => <option key={s.id} value={s.id} className="bg-secondary text-foreground">{s.name}</option>)}
                     </select>
                 </div>
             </div>
@@ -173,11 +173,11 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
                         onChange={(e) => setPaymentMethod(e.target.value)}
                         className="w-full bg-transparent border-none focus:ring-0 outline-none text-sm font-bold text-foreground"
                     >
-                        <option value="PIX">PIX</option>
-                        <option value="Boleto">Boleto</option>
-                        <option value="Cartão de Crédito">Cartão de Crédito</option>
-                        <option value="Transferência">Transferência</option>
-                        <option value="Dinheiro">Dinheiro</option>
+                        <option value="PIX" className="bg-secondary text-foreground">PIX</option>
+                        <option value="Boleto" className="bg-secondary text-foreground">Boleto</option>
+                        <option value="Cartão de Crédito" className="bg-secondary text-foreground">Cartão de Crédito</option>
+                        <option value="Transferência" className="bg-secondary text-foreground">Transferência</option>
+                        <option value="Dinheiro" className="bg-secondary text-foreground">Dinheiro</option>
                     </select>
                 </div>
             </div>
@@ -229,7 +229,7 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
                         onChange={(e) => setRoom(e.target.value as Room)}
                         className="w-full bg-secondary text-foreground rounded-xl border border-input focus:ring-2 focus:ring-primary outline-none transition-all p-2 text-xs font-bold"
                     >
-                        {ROOMS.map(r => <option key={r} value={r}>{r}</option>)}
+                        {ROOMS.map(r => <option key={r} value={r} className="bg-secondary text-foreground">{r}</option>)}
                     </select>
                 </div>
                 <div className="flex-1">
@@ -282,25 +282,25 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
                     {attachments.map((url, index) => {
                         const isPdf = url.toLowerCase().endsWith('.pdf');
                         return (
-                        <div key={index} className="relative group/img w-16 h-16 rounded-lg overflow-hidden border border-border bg-secondary flex items-center justify-center">
-                            {isPdf ? (
-                                <div className="flex flex-col items-center gap-1 text-muted-foreground">
-                                    <FileText size={18} />
-                                    <span className="text-[8px] font-bold">PDF</span>
+                            <div key={index} className="relative group/img w-16 h-16 rounded-lg overflow-hidden border border-border bg-secondary flex items-center justify-center">
+                                {isPdf ? (
+                                    <div className="flex flex-col items-center gap-1 text-muted-foreground">
+                                        <FileText size={18} />
+                                        <span className="text-[8px] font-bold">PDF</span>
+                                    </div>
+                                ) : (
+                                    <img src={url} alt={`Anexo ${index + 1}`} className="w-full h-full object-cover" />
+                                )}
+                                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
+                                    <button
+                                        type="button"
+                                        onClick={() => removeAttachment(url)}
+                                        className="p-1 bg-rose-500 rounded-full text-white hover:bg-rose-600"
+                                    >
+                                        <X size={12} />
+                                    </button>
                                 </div>
-                            ) : (
-                                <img src={url} alt={`Anexo ${index + 1}`} className="w-full h-full object-cover" />
-                            )}
-                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
-                                <button
-                                    type="button"
-                                    onClick={() => removeAttachment(url)}
-                                    className="p-1 bg-rose-500 rounded-full text-white hover:bg-rose-600"
-                                >
-                                    <X size={12} />
-                                </button>
                             </div>
-                        </div>
                         );
                     })}
                     <label className="w-16 h-16 rounded-lg border-2 border-dashed border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary cursor-pointer hover:bg-white dark:hover:bg-slate-800 transition-all">

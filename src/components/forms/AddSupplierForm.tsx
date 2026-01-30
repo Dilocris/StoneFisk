@@ -145,7 +145,7 @@ export function AddSupplierForm({ onSuccess, initialData }: AddSupplierFormProps
                             onChange={(e) => setCategory(e.target.value as Category)}
                             className="w-full p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border-none focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm font-bold"
                         >
-                            {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                            {CATEGORIES.map(c => <option key={c} value={c} className="bg-secondary text-foreground">{c}</option>)}
                         </select>
                     </div>
 

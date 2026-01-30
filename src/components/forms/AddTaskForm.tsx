@@ -114,7 +114,7 @@ export function AddTaskForm({ onSuccess, initialData }: AddTaskFormProps) {
                         onChange={(e) => setCategory(e.target.value as Category)}
                         className="w-full p-3 bg-secondary rounded-xl border border-input focus:ring-2 focus:ring-primary outline-none transition-all text-sm font-bold text-foreground"
                     >
-                        {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                        {CATEGORIES.map(c => <option key={c} value={c} className="bg-secondary text-foreground">{c}</option>)}
                     </select>
                 </div>
                 <div>
@@ -124,7 +124,7 @@ export function AddTaskForm({ onSuccess, initialData }: AddTaskFormProps) {
                         onChange={(e) => setRoom(e.target.value as Room)}
                         className="w-full p-3 bg-secondary rounded-xl border border-input focus:ring-2 focus:ring-primary outline-none transition-all text-sm font-bold text-foreground"
                     >
-                        {ROOMS.map(r => <option key={r} value={r}>{r}</option>)}
+                        {ROOMS.map(r => <option key={r} value={r} className="bg-secondary text-foreground">{r}</option>)}
                     </select>
                 </div>
             </div>
@@ -136,8 +136,8 @@ export function AddTaskForm({ onSuccess, initialData }: AddTaskFormProps) {
                     onChange={(e) => setSupplierId(e.target.value)}
                     className="w-full p-3 bg-secondary rounded-xl border border-input focus:ring-2 focus:ring-primary outline-none transition-all text-sm font-bold text-foreground"
                 >
-                    <option value="">Nenhum Fornecedor (Opcional)</option>
-                    {data.suppliers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                    <option value="" className="bg-secondary text-foreground">Nenhum Fornecedor (Opcional)</option>
+                    {data.suppliers.map(s => <option key={s.id} value={s.id} className="bg-secondary text-foreground">{s.name}</option>)}
                 </select>
             </div>
 

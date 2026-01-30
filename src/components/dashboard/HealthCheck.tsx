@@ -37,7 +37,7 @@ export function HealthCheck() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             {/* Financial Health Card */}
             <Card className={clsx(
-                "relative overflow-hidden transition-all duration-300 border-l-4",
+                "relative overflow-hidden transition-all duration-200 ease-out border-l-4",
                 financialStatus === 'good' && "border-l-success bg-success/10",
                 financialStatus === 'warning' && "border-l-warning bg-warning/10",
                 financialStatus === 'critical' && "border-l-danger bg-danger/10"
@@ -67,7 +67,7 @@ export function HealthCheck() {
                 <div className="mt-3 h-2 w-full bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
                     <div
                         className={clsx(
-                            "h-full transition-all duration-1000",
+                            "h-full transition-[width] duration-400 ease-out",
                             financialStatus === 'good' ? "bg-success" : financialStatus === 'warning' ? "bg-warning" : "bg-danger"
                         )}
                         style={{ width: `${Math.min(budgetUsage, 100)}%` }}
@@ -77,7 +77,7 @@ export function HealthCheck() {
 
             {/* Timeline Health Card */}
             <Card className={clsx(
-                "relative overflow-hidden transition-all duration-300 border-l-4",
+                "relative overflow-hidden transition-all duration-200 ease-out border-l-4",
                 timelineStatus === 'good' && "border-l-info bg-info/10",
                 timelineStatus === 'warning' && "border-l-warning bg-warning/10",
                 timelineStatus === 'critical' && "border-l-danger bg-danger/10"
@@ -104,7 +104,7 @@ export function HealthCheck() {
                     <span className="text-slate-500">{totalDelayDays} dias de atraso acumulado</span>
                     <button
                         onClick={() => document.getElementById('gantt-section')?.scrollIntoView({ behavior: 'smooth' })}
-                        className="text-blue-600 font-semibold hover:underline"
+                        className="text-blue-600 font-semibold hover:underline transition-colors duration-150 hover:text-blue-700"
                     >
                         Ver Detalhes
                     </button>

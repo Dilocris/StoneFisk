@@ -65,7 +65,7 @@ export function ManagementLayer() {
                         <button
                             onClick={() => setActiveTab('expenses')}
                             className={clsx(
-                                "px-6 py-2 rounded-lg text-sm font-bold transition-all",
+                                "px-6 py-2 rounded-lg text-sm font-bold transition-all duration-150 ease-out",
                                 activeTab === 'expenses' ? "bg-white dark:bg-slate-700 shadow-sm text-blue-600" : "text-slate-500 hover:text-slate-700"
                             )}
                         >
@@ -74,7 +74,7 @@ export function ManagementLayer() {
                         <button
                             onClick={() => setActiveTab('tasks')}
                             className={clsx(
-                                "px-6 py-2 rounded-lg text-sm font-bold transition-all",
+                                "px-6 py-2 rounded-lg text-sm font-bold transition-all duration-150 ease-out",
                                 activeTab === 'tasks' ? "bg-white dark:bg-slate-700 shadow-sm text-blue-600" : "text-slate-500 hover:text-slate-700"
                             )}
                         >
@@ -83,7 +83,7 @@ export function ManagementLayer() {
                         <button
                             onClick={() => setActiveTab('suppliers')}
                             className={clsx(
-                                "px-6 py-2 rounded-lg text-sm font-bold transition-all",
+                                "px-6 py-2 rounded-lg text-sm font-bold transition-all duration-150 ease-out",
                                 activeTab === 'suppliers' ? "bg-white dark:bg-slate-700 shadow-sm text-blue-600" : "text-slate-500 hover:text-slate-700"
                             )}
                         >
@@ -95,7 +95,7 @@ export function ManagementLayer() {
                         {selectedIds.length > 0 ? (
                             <button
                                 onClick={handleBulkDelete}
-                                className="flex items-center gap-2 px-4 py-2 bg-rose-500 text-white rounded-xl text-sm font-bold hover:bg-rose-600 shadow-lg shadow-rose-500/20 transition-all animate-in fade-in slide-in-from-top-2"
+                                className="flex items-center gap-2 px-4 py-2 bg-rose-500 text-white rounded-xl text-sm font-bold hover:bg-rose-600 shadow-lg shadow-rose-500/20 transition-all duration-150 ease-out animate-in fade-in slide-in-from-top-2"
                             >
                                 <Trash2 size={18} />
                                 Excluir ({selectedIds.length})
@@ -108,7 +108,7 @@ export function ManagementLayer() {
                                             'open-supplier-modal';
                                     window.dispatchEvent(new CustomEvent(event));
                                 }}
-                                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 shadow-lg shadow-blue-500/20 transition-all font-outfit"
+                                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 shadow-lg shadow-blue-500/20 transition-all duration-150 ease-out font-outfit"
                             >
                                 <Plus size={18} />
                                 {activeTab === 'expenses' ? 'Novo Gasto' : activeTab === 'tasks' ? 'Nova Tarefa' : 'Novo Fornecedor'}
@@ -153,7 +153,7 @@ export function ManagementLayer() {
                                     <tr><td colSpan={7} className="px-6 py-12 text-center text-muted-foreground italic">Nenhum gasto registrado.</td></tr>
                                 ) : (
                                     data.expenses.map(exp => (
-                                        <tr key={exp.id} className={clsx("hover:bg-muted/50 transition-colors group", selectedIds.includes(exp.id) && "bg-muted/30")}>
+                                        <tr key={exp.id} className={clsx("hover:bg-muted/50 transition-colors duration-150 group", selectedIds.includes(exp.id) && "bg-muted/30")}>
                                             <td className="px-6 py-4">
                                                 <input
                                                     type="checkbox"
@@ -193,7 +193,7 @@ export function ManagementLayer() {
                                                         value={exp.status}
                                                         onChange={(e) => updateExpense(exp.id, { status: e.target.value as any })}
                                                         className={clsx(
-                                                            "px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-tighter cursor-pointer outline-none border transition-all",
+                                                            "px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-tighter cursor-pointer outline-none border transition-all duration-150 ease-out",
                                                             exp.status === 'Paid' ? "bg-success/10 text-success border-success/30" :
                                                                 exp.status === 'Deposit' ? "bg-info/10 text-info border-info/30" : "bg-warning/10 text-warning border-warning/30"
                                                         )}
@@ -205,7 +205,7 @@ export function ManagementLayer() {
                                                     {exp.attachments && exp.attachments.length > 0 ? (
                                                         <button
                                                             onClick={() => window.dispatchEvent(new CustomEvent('edit-expense', { detail: exp }))}
-                                                            className="flex items-center gap-1 text-[10px] font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded-full hover:bg-blue-100 transition-colors"
+                                                            className="flex items-center gap-1 text-[10px] font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded-full hover:bg-blue-100 transition-colors duration-150"
                                                         >
                                                             <ImageIcon size={12} /> {exp.attachments.length}
                                                         </button>
@@ -216,14 +216,14 @@ export function ManagementLayer() {
                                                 <div className="flex justify-end gap-1">
                                                     <button
                                                         onClick={() => window.dispatchEvent(new CustomEvent('edit-expense', { detail: exp }))}
-                                                        className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                                                        className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-150"
                                                         title="Editar"
                                                     >
                                                         <Edit3 size={14} />
                                                     </button>
                                                     <button
                                                         onClick={() => { if (confirm('Excluir este gasto?')) deleteExpense(exp.id) }}
-                                                        className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
+                                                        className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors duration-150"
                                                         title="Excluir"
                                                     >
                                                         <Trash2 size={14} />
@@ -238,7 +238,7 @@ export function ManagementLayer() {
                                     <tr><td colSpan={7} className="px-6 py-12 text-center text-muted-foreground italic">Nenhuma tarefa registrada.</td></tr>
                                 ) : (
                                     data.tasks.map(task => (
-                                        <tr key={task.id} className={clsx("hover:bg-muted/50 transition-colors group", selectedIds.includes(task.id) && "bg-muted/30")}>
+                                        <tr key={task.id} className={clsx("hover:bg-muted/50 transition-colors duration-150 group", selectedIds.includes(task.id) && "bg-muted/30")}>
                                             <td className="px-6 py-4">
                                                 <input
                                                     type="checkbox"
@@ -260,7 +260,7 @@ export function ManagementLayer() {
                                                     value={task.status}
                                                     onChange={(e) => updateTask(task.id, { status: e.target.value as any })}
                                                     className={clsx(
-                                                        "px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-tighter cursor-pointer outline-none border transition-all",
+                                                        "px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-tighter cursor-pointer outline-none border transition-all duration-150 ease-out",
                                                         task.status === 'Completed' ? "bg-success/10 text-success border-success/30" :
                                                             task.status === 'In Progress' ? "bg-warning/10 text-warning border-warning/30" :
                                                                 task.status === 'Blocked' ? "bg-danger/10 text-danger border-danger/30" : "bg-muted text-muted-foreground border-border"
@@ -276,14 +276,14 @@ export function ManagementLayer() {
                                                 <div className="flex justify-end gap-1">
                                                     <button
                                                         onClick={() => window.dispatchEvent(new CustomEvent('edit-task', { detail: task }))}
-                                                        className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                                                        className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-150"
                                                         title="Editar"
                                                     >
                                                         <Edit3 size={14} />
                                                     </button>
                                                     <button
                                                         onClick={() => { if (confirm('Excluir esta tarefa?')) deleteTask(task.id) }}
-                                                        className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
+                                                        className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors duration-150"
                                                         title="Excluir"
                                                     >
                                                         <Trash2 size={14} />
@@ -298,7 +298,7 @@ export function ManagementLayer() {
                                     <tr><td colSpan={7} className="px-6 py-12 text-center text-muted-foreground italic">Nenhum fornecedor cadastrado.</td></tr>
                                 ) : (
                                     data.suppliers.map(sup => (
-                                        <tr key={sup.id} className={clsx("hover:bg-muted/50 transition-colors group", selectedIds.includes(sup.id) && "bg-muted/30")}>
+                                        <tr key={sup.id} className={clsx("hover:bg-muted/50 transition-colors duration-150 group", selectedIds.includes(sup.id) && "bg-muted/30")}>
                                             <td className="px-6 py-4">
                                                 <input
                                                     type="checkbox"
@@ -338,14 +338,14 @@ export function ManagementLayer() {
                                                 <div className="flex justify-end gap-1">
                                                     <button
                                                         onClick={() => window.dispatchEvent(new CustomEvent('edit-supplier', { detail: sup }))}
-                                                        className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                                                        className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-150"
                                                         title="Editar"
                                                     >
                                                         <Edit3 size={14} />
                                                     </button>
                                                     <button
                                                         onClick={() => { if (confirm('Remover fornecedor?')) deleteSupplier(sup.id) }}
-                                                        className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
+                                                        className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors duration-150"
                                                         title="Excluir"
                                                     >
                                                         <Trash2 size={14} />

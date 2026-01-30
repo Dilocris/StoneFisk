@@ -21,13 +21,13 @@ export function AssetsTracker() {
                     data.assets.map((asset) => (
                         <div
                             key={asset.id}
-                            className="flex items-center justify-between p-3 rounded-2xl bg-card border border-border hover:shadow-md transition-all group"
+                            className="flex items-center justify-between p-3 rounded-2xl bg-card border border-border hover:shadow-md transition-all duration-150 ease-out hover:-translate-y-0.5 group"
                         >
                             <div className="flex items-center gap-3">
                                 <button
                                     onClick={() => toggleAssetStatus(asset.id)}
                                     className={clsx(
-                                        "w-10 h-10 rounded-xl flex items-center justify-center border-2 transition-all",
+                                        "w-10 h-10 rounded-xl flex items-center justify-center border-2 transition-all duration-150 ease-out",
                                         asset.status === 'Delivered'
                                             ? "bg-success border-success text-success-foreground shadow-lg shadow-success/20"
                                             : "border-border text-transparent hover:border-success"
@@ -37,7 +37,7 @@ export function AssetsTracker() {
                                 </button>
                                 <div>
                                     <h4 className={clsx(
-                                        "font-bold text-sm transition-all",
+                                        "font-bold text-sm transition-colors duration-150",
                                         asset.status === 'Delivered' ? "text-muted-foreground line-through decoration-success/30" : "text-foreground"
                                     )}>
                                         {asset.name}
@@ -79,14 +79,14 @@ export function AssetsTracker() {
                                             window.dispatchEvent(new CustomEvent('edit-asset', { detail: asset }));
                                         }
                                     }}
-                                    className="p-2 text-slate-300 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-all"
+                                    className="p-2 text-slate-300 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-colors duration-150"
                                     title="Editar"
                                 >
                                     <Edit3 size={16} />
                                 </button>
                                 <button
                                     onClick={() => { if (confirm('Excluir este item?')) deleteAsset(asset.id) }}
-                                    className="p-2 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
+                                    className="p-2 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-colors duration-150"
                                     title="Excluir"
                                 >
                                     <Trash2 size={16} />
@@ -99,9 +99,9 @@ export function AssetsTracker() {
 
             <button
                 onClick={() => window.dispatchEvent(new CustomEvent('open-asset-modal'))}
-                className="w-full mt-6 py-4 border-2 border-dashed border-border rounded-2xl text-muted-foreground hover:border-primary hover:text-primary hover:bg-primary/5 transition-all font-bold text-xs flex items-center justify-center gap-2 group"
+                className="w-full mt-6 py-4 border-2 border-dashed border-border rounded-2xl text-muted-foreground hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-150 ease-out font-bold text-xs flex items-center justify-center gap-2 group"
             >
-                <Plus size={16} className="group-hover:rotate-90 transition-transform" />
+                <Plus size={16} className="group-hover:rotate-90 transition-transform duration-150 ease-out" />
                 Adicionar Item para Rastrear
             </button>
         </Card >

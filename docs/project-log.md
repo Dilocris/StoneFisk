@@ -221,3 +221,11 @@ All agents MUST read this to understand context before starting work.
   - Clamped budget visualization to avoid divide-by-zero and over-budget visual overflow.
   - Cleaned unused imports and aligned HEIC error messaging with accepted types.
 - **Reason**: Honor local-only storage expectations and reduce data integrity/UX edge cases.
+
+## 2026-01-30: Visual Harmonization & Modal UX
+- **Action**: Comprehensive UI polish for dark mode consistency and viewport responsiveness.
+- **Details**:
+  - **Gantt KPI**: Updated "Carga de Atraso" to use alpha-blended backgrounds (`bg-rose-500/10`) instead of solid pastels, fixing the "bright white box" issue in dark mode.
+  - **Modal Fix**: Enforced `max-h-[90vh]` and internal scrolling for all modals, preventing overflow on smaller screens (critical for Add Expense form).
+  - **Dropdowns**: Applied explicit `bg-secondary text-foreground` to `<option>` elements across all forms (Expense, Task, Asset, Supplier) to prevent "white text on white background" browser defaults in some dark mode contexts.
+- **Reason**: Ensure a premium, glitch-free visual experience that matches the "Monokai Dimmed" aesthetic.

@@ -62,8 +62,8 @@ export function AddAssetForm({ onSuccess, initialData }: AddAssetFormProps) {
                     onChange={(e) => setSupplierId(e.target.value)}
                     className="w-full p-4 bg-secondary rounded-2xl border border-input focus:ring-2 focus:ring-primary outline-none transition-all text-sm font-bold text-foreground"
                 >
-                    <option value="">Selecione o Fornecedor (Opcional)</option>
-                    {data.suppliers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                    <option value="" className="bg-secondary text-foreground">Selecione o Fornecedor (Opcional)</option>
+                    {data.suppliers.map(s => <option key={s.id} value={s.id} className="bg-secondary text-foreground">{s.name}</option>)}
                 </select>
             </div>
 

@@ -47,7 +47,7 @@ export function ProgressLog() {
                 {editingDate && (
                     <button
                         onClick={() => { setNote(''); setEditingDate(null); }}
-                        className="text-[10px] font-bold text-rose-500 hover:underline uppercase"
+                        className="text-[10px] font-bold text-rose-500 hover:underline uppercase transition-colors duration-150"
                     >
                         Cancelar Edição
                     </button>
@@ -61,13 +61,13 @@ export function ProgressLog() {
                     onChange={(e) => setNote(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder="Ex: O pintor finalizou o teto da sala..."
-                    className="w-full h-24 p-4 bg-slate-50 dark:bg-slate-900 border-none rounded-2xl resize-none focus:ring-2 focus:ring-blue-500 transition-all text-sm outline-none pr-12"
+                    className="w-full h-24 p-4 bg-slate-50 dark:bg-slate-900 border-none rounded-2xl resize-none focus:ring-2 focus:ring-blue-500 transition-all duration-150 ease-out text-sm outline-none pr-12"
                 />
                 <button
                     onClick={handleSubmit}
                     disabled={!note.trim() || isSaving}
                     className={clsx(
-                        "absolute top-2 right-2 p-2 text-white rounded-lg shadow-lg transition-all disabled:opacity-50 disabled:shadow-none",
+                        "absolute top-2 right-2 p-2 text-white rounded-lg shadow-lg transition-all duration-150 ease-out disabled:opacity-50 disabled:shadow-none",
                         editingDate ? "bg-amber-500 shadow-amber-500/30" : "bg-blue-600 shadow-blue-500/30"
                     )}
                 >
@@ -93,16 +93,16 @@ export function ProgressLog() {
                                         <span className="block text-[10px] font-bold text-blue-500 mb-1">
                                             {new Date(entry.date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
                                         </span>
-                                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
                                             <button
                                                 onClick={() => handleEdit(entry)}
-                                                className="p-1 hover:text-amber-500 transition-colors"
+                                                className="p-1 hover:text-amber-500 transition-colors duration-150"
                                             >
                                                 <Edit3 size={12} />
                                             </button>
                                             <button
                                                 onClick={() => deleteProgressNote(entry.date)}
-                                                className="p-1 hover:text-rose-500 transition-colors"
+                                                className="p-1 hover:text-rose-500 transition-colors duration-150"
                                             >
                                                 <Trash2 size={12} />
                                             </button>
