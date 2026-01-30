@@ -37,13 +37,13 @@ export function BudgetWidget() {
                             <div
                                 style={{ height: `${paidHeight}%` }}
                                 className="w-full bg-success transition-all duration-700 shadow-lg shadow-success/20"
-                                title={`Pago: R$ ${paidAmount.toLocaleString()}`}
+                                title={`Pago: R$ ${paidAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                             />
                             {/* Pending Segment */}
                             <div
                                 style={{ height: `${pendingHeight}%` }}
                                 className="w-full bg-warning transition-all duration-700 shadow-lg shadow-warning/10 border-t border-white/10"
-                                title={`Pendente: R$ ${pendingAmount.toLocaleString()}`}
+                                title={`Pendente: R$ ${pendingAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                             />
                             {/* Empty space represented by background */}
                         </div>
@@ -64,7 +64,7 @@ export function BudgetWidget() {
                                 <span className="text-[10px] font-black text-success uppercase tracking-widest">Pago</span>
                                 <span className="text-[9px] font-bold text-success/50">{Math.round(paidHeight)}%</span>
                             </div>
-                            <span className="text-xl font-bold text-foreground">R$ {paidAmount.toLocaleString()}</span>
+                            <span className="text-xl font-bold text-foreground">R$ {paidAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                         </div>
 
                         <div className="group p-4 rounded-2xl bg-card border border-border transition-all hover:scale-[1.02]">
@@ -72,7 +72,7 @@ export function BudgetWidget() {
                                 <span className="text-[10px] font-black text-warning uppercase tracking-widest">Pendente</span>
                                 <span className="text-[9px] font-bold text-warning/50">{Math.round(pendingHeight)}%</span>
                             </div>
-                            <span className="text-xl font-bold text-foreground">R$ {pendingAmount.toLocaleString()}</span>
+                            <span className="text-xl font-bold text-foreground">R$ {pendingAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                         </div>
 
                         <div className="group p-4 rounded-2xl bg-card border border-border transition-all hover:scale-[1.02]">
@@ -80,13 +80,13 @@ export function BudgetWidget() {
                                 <span className="text-[10px] font-black text-info uppercase tracking-widest">Disponível</span>
                                 <span className="text-[9px] font-bold text-info/50">{Math.round(availableHeight)}%</span>
                             </div>
-                            <span className="text-xl font-bold text-info">R$ {remaining.toLocaleString()}</span>
+                            <span className="text-xl font-bold text-info">R$ {remaining.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                         </div>
                     </div>
 
                     <div className="mt-2 pt-4 border-t border-border">
                         <span className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Orçamento Total</span>
-                        <span className="text-2xl font-black text-foreground">R$ {data.project.totalBudget.toLocaleString()}</span>
+                        <span className="text-2xl font-black text-foreground">R$ {data.project.totalBudget.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                     </div>
                 </div>
             </div>

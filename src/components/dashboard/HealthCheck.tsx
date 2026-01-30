@@ -51,7 +51,7 @@ export function HealthCheck() {
                 </div>
                 <div className="mt-4 flex items-center justify-between text-sm">
                     <span className="text-slate-500">{budgetUsage.toFixed(0)}% do total utilizado</span>
-                    <span className="font-bold">Restam R$ {remaining.toLocaleString()}</span>
+                    <span className="font-bold">Restam R$ {remaining.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 </div>
                 <div className="mt-3 h-2 w-full bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
                     <div

@@ -53,7 +53,7 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
 
         const expenseData = {
             name,
-            amount: parseFloat(amount),
+            amount: Math.round(parseFloat(amount) * 100) / 100,
             category,
             room,
             date,
@@ -80,15 +80,15 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4 pt-4">
-            <div className="bg-[#2d2d2d] p-4 rounded-2xl mb-4 border border-[#3e3d32] shadow-sm">
-                <label className="block text-xs font-bold text-[#9a9a9a] uppercase tracking-widest mb-3">Informações de Compra</label>
+            <div className="bg-card p-4 rounded-2xl mb-4 border border-border shadow-sm">
+                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3">Informações de Compra</label>
                 <div className="space-y-4">
                     <input
                         required
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         placeholder="Nome do produto ou serviço (ex: Piso Vinílico)"
-                        className="w-full p-3 bg-[#1c1c1c] text-white rounded-xl border border-[#3e3d32] focus:ring-2 focus:ring-[#67d8ef] outline-none transition-all text-sm font-bold placeholder:text-[#49483e]"
+                        className="w-full p-3 bg-secondary rounded-xl border border-input focus:ring-2 focus:ring-primary outline-none transition-all text-sm font-bold text-foreground placeholder:text-muted-foreground"
                     />
 
                     <div className="grid grid-cols-2 gap-4">
@@ -100,14 +100,14 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
                                 value={amount}
                                 onChange={(e) => setAmount(e.target.value)}
                                 placeholder="Valor Total (R$)"
-                                className="w-full p-3 pl-10 bg-[#1c1c1c] text-white rounded-xl border border-[#3e3d32] focus:ring-2 focus:ring-[#67d8ef] outline-none transition-all text-sm font-mono font-bold placeholder:text-[#49483e]"
+                                className="w-full p-3 pl-10 bg-secondary rounded-xl border border-input focus:ring-2 focus:ring-primary outline-none transition-all text-sm font-mono font-bold text-foreground placeholder:text-muted-foreground"
                             />
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9a9a9a] font-bold text-xs">R$</span>
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-bold text-xs">R$</span>
                         </div>
                         <select
                             value={category}
                             onChange={(e) => setCategory(e.target.value as Category)}
-                            className="w-full p-3 bg-[#1c1c1c] text-white rounded-xl border border-[#3e3d32] focus:ring-2 focus:ring-[#67d8ef] outline-none transition-all text-xs font-bold"
+                            className="w-full p-3 bg-secondary text-foreground rounded-xl border border-input focus:ring-2 focus:ring-primary outline-none transition-all text-xs font-bold"
                         >
                             {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                         </select>
@@ -116,7 +116,7 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
                     <select
                         value={supplierId}
                         onChange={(e) => setSupplierId(e.target.value)}
-                        className="w-full p-3 bg-[#1c1c1c] text-white rounded-xl border border-[#3e3d32] focus:ring-2 focus:ring-[#67d8ef] outline-none transition-all text-xs font-bold"
+                        className="w-full p-3 bg-secondary text-foreground rounded-xl border border-input focus:ring-2 focus:ring-primary outline-none transition-all text-xs font-bold"
                     >
                         <option value="">Selecione o Fornecedor (Opcional)</option>
                         {data.suppliers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
@@ -125,26 +125,26 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-                <div className="bg-[#2d2d2d] p-4 rounded-2xl border border-[#3e3d32]">
-                    <label className="flex items-center gap-2 text-[10px] font-bold text-[#9a9a9a] uppercase mb-2">
-                        <Calendar size={12} className="text-[#67d8ef]" /> Vencimento
+                <div className="bg-card p-4 rounded-2xl border border-border">
+                    <label className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground uppercase mb-2">
+                        <Calendar size={12} className="text-primary" /> Vencimento
                     </label>
                     <input
                         type="date"
                         required
                         value={dueDate}
                         onChange={(e) => setDueDate(e.target.value)}
-                        className="w-full bg-transparent border-none focus:ring-0 outline-none text-sm font-bold text-white custom-calendar-icon-white"
+                        className="w-full bg-transparent border-none focus:ring-0 outline-none text-sm font-bold text-foreground custom-calendar-icon-white"
                     />
                 </div>
-                <div className="bg-[#2d2d2d] p-4 rounded-2xl border border-[#3e3d32]">
-                    <label className="flex items-center gap-2 text-[10px] font-bold text-[#9a9a9a] uppercase mb-2">
-                        <CreditCard size={12} className="text-[#67d8ef]" /> Forma
+                <div className="bg-card p-4 rounded-2xl border border-border">
+                    <label className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground uppercase mb-2">
+                        <CreditCard size={12} className="text-primary" /> Forma
                     </label>
                     <select
                         value={paymentMethod}
                         onChange={(e) => setPaymentMethod(e.target.value)}
-                        className="w-full bg-transparent border-none focus:ring-0 outline-none text-sm font-bold text-white"
+                        className="w-full bg-transparent border-none focus:ring-0 outline-none text-sm font-bold text-foreground"
                     >
                         <option value="PIX">PIX</option>
                         <option value="Boleto">Boleto</option>
@@ -156,15 +156,15 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
             </div>
 
             {!initialData && (
-                <div className="bg-amber-50/50 dark:bg-amber-900/10 p-4 rounded-2xl border border-amber-100 dark:border-amber-900/20">
+                <div className="bg-warning/10 p-4 rounded-2xl border border-warning/20">
                     <div className="flex items-center justify-between mb-3">
-                        <label className="flex items-center gap-2 text-[10px] font-bold text-amber-600 dark:text-amber-500 uppercase">
+                        <label className="flex items-center gap-2 text-[10px] font-bold text-warning uppercase">
                             <Repeat size={14} /> Parcelamento
                         </label>
                         <button
                             type="button"
                             onClick={() => setIsInstallment(!isInstallment)}
-                            className={`w-10 h-5 rounded-full transition-all relative ${isInstallment ? 'bg-amber-500' : 'bg-slate-200 dark:bg-slate-700'}`}
+                            className={`w-10 h-5 rounded-full transition-all relative ${isInstallment ? 'bg-warning' : 'bg-muted'}`}
                         >
                             <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all ${isInstallment ? 'left-6' : 'left-1'}`} />
                         </button>
@@ -180,13 +180,13 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
                                     max="48"
                                     value={installmentCount}
                                     onChange={(e) => setInstallmentCount(e.target.value)}
-                                    className="w-full p-2 bg-white dark:bg-slate-900 rounded-xl border-none text-sm font-bold"
+                                    className="w-full p-2 bg-card rounded-xl border-none text-sm font-bold text-foreground"
                                 />
                             </div>
                             <div className="flex-1">
-                                <span className="text-[10px] text-slate-500 font-bold block mb-1">Valor/Parcela</span>
-                                <div className="text-sm font-black text-amber-600">
-                                    R$ {(parseFloat(amount || '0') / parseInt(installmentCount || '1')).toLocaleString()}
+                                <span className="text-[10px] text-muted-foreground font-bold block mb-1">Valor/Parcela</span>
+                                <div className="text-sm font-black text-warning">
+                                    R$ {(parseFloat(amount || '0') / parseInt(installmentCount || '1')).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </div>
                             </div>
                         </div>
@@ -194,26 +194,26 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
                 </div>
             )}
 
-            <div className="flex gap-4 p-4 bg-[#2d2d2d] rounded-2xl border border-[#3e3d32]">
+            <div className="flex gap-4 p-4 bg-card rounded-2xl border border-border">
                 <div className="flex-1">
-                    <label className="block text-[10px] font-bold text-[#9a9a9a] uppercase mb-2">Cômodo</label>
+                    <label className="block text-[10px] font-bold text-muted-foreground uppercase mb-2">Cômodo</label>
                     <select
                         value={room}
                         onChange={(e) => setRoom(e.target.value as Room)}
-                        className="w-full bg-[#1c1c1c] text-white rounded-xl border border-[#3e3d32] focus:ring-2 focus:ring-[#67d8ef] outline-none transition-all p-2 text-xs font-bold"
+                        className="w-full bg-secondary text-foreground rounded-xl border border-input focus:ring-2 focus:ring-primary outline-none transition-all p-2 text-xs font-bold"
                     >
                         {ROOMS.map(r => <option key={r} value={r}>{r}</option>)}
                     </select>
                 </div>
                 <div className="flex-1">
-                    <label className="block text-[10px] font-bold text-[#9a9a9a] uppercase mb-2">Status</label>
+                    <label className="block text-[10px] font-bold text-muted-foreground uppercase mb-2">Status</label>
                     <div className="flex gap-2">
                         <button
                             type="button"
                             onClick={() => setStatus('Paid')}
                             className={clsx(
                                 "flex-1 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
-                                status === 'Paid' ? 'bg-[#98e342] text-black shadow-md' : 'bg-[#1c1c1c] text-[#9a9a9a]'
+                                status === 'Paid' ? 'bg-success text-success-foreground shadow-md' : 'bg-muted text-muted-foreground'
                             )}
                         >
                             PAGO
@@ -223,7 +223,7 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
                             onClick={() => setStatus('Deposit')}
                             className={clsx(
                                 "flex-1 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
-                                status === 'Deposit' ? 'bg-[#67d8ef] text-black shadow-md' : 'bg-[#1c1c1c] text-[#9a9a9a]'
+                                status === 'Deposit' ? 'bg-info text-info-foreground shadow-md' : 'bg-muted text-muted-foreground'
                             )}
                         >
                             SINAL
@@ -233,7 +233,7 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
                             onClick={() => setStatus('Pending')}
                             className={clsx(
                                 "flex-1 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
-                                status === 'Pending' ? 'bg-[#fce566] text-black shadow-md' : 'bg-[#1c1c1c] text-[#9a9a9a]'
+                                status === 'Pending' ? 'bg-warning text-warning-foreground shadow-md' : 'bg-muted text-muted-foreground'
                             )}
                         >
                             PEND
@@ -245,7 +245,7 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
             <button
                 type="submit"
                 disabled={isLoading || isUploading}
-                className="w-full py-4 bg-[#67d8ef] text-black font-bold rounded-2xl shadow-lg shadow-[#67d8ef]/30 hover:bg-[#67d8ef]/90 transition-all mt-4 flex items-center justify-center disabled:opacity-70"
+                className="w-full py-4 bg-primary text-primary-foreground font-bold rounded-2xl shadow-lg shadow-primary/30 hover:bg-primary/90 transition-all mt-4 flex items-center justify-center disabled:opacity-70"
             >
                 {isLoading ? <Loader2 className="animate-spin mr-2" size={20} /> : <Check className="mr-2" size={20} />}
                 {initialData ? 'SALVAR ALTERAÇÕES' : (isInstallment ? `REGISTRAR ${installmentCount} PARCELAS` : 'REGISTRAR GASTO')}

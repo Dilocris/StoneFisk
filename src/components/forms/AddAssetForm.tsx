@@ -38,28 +38,28 @@ export function AddAssetForm({ onSuccess, initialData }: AddAssetFormProps) {
     return (
         <form onSubmit={handleSubmit} className="space-y-6 pt-4">
             <div className="flex flex-col items-center justify-center p-4 mb-2">
-                <Package size={40} className="text-blue-500 mb-2" />
-                <p className="text-xs text-slate-500 text-center uppercase font-bold tracking-widest">Novo item para rastrear entrega</p>
+                <Package size={40} className="text-primary mb-2" />
+                <p className="text-xs text-muted-foreground text-center uppercase font-bold tracking-widest">Novo item para rastrear entrega</p>
             </div>
 
             <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 text-center">O que foi comprado?</label>
+                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2 text-center">O que foi comprado?</label>
                 <input
                     required
                     autoFocus
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Ex: Piso da Cozinha, Torneiras, Sofá..."
-                    className="w-full p-4 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-100 dark:border-slate-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all text-center text-lg font-bold"
+                    className="w-full p-4 bg-secondary rounded-2xl border border-input focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-center text-lg font-bold text-foreground"
                 />
             </div>
 
             <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 text-center text-[10px]">Quem é o Fornecedor?</label>
+                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2 text-center text-[10px]">Quem é o Fornecedor?</label>
                 <select
                     value={supplierId}
                     onChange={(e) => setSupplierId(e.target.value)}
-                    className="w-full p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border-none focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm font-bold"
+                    className="w-full p-4 bg-secondary rounded-2xl border border-input focus:ring-2 focus:ring-primary outline-none transition-all text-sm font-bold text-foreground"
                 >
                     <option value="">Selecione o Fornecedor (Opcional)</option>
                     {data.suppliers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
@@ -69,7 +69,7 @@ export function AddAssetForm({ onSuccess, initialData }: AddAssetFormProps) {
             <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-4 bg-[#67d8ef] text-black font-bold rounded-2xl shadow-lg shadow-[#67d8ef]/30 hover:bg-[#67d8ef]/90 transition-all flex items-center justify-center disabled:opacity-50"
+                className="w-full py-4 bg-primary text-primary-foreground font-bold rounded-2xl shadow-lg shadow-primary/30 hover:bg-primary/90 transition-all flex items-center justify-center disabled:opacity-50"
             >
                 {isLoading ? <Loader2 className="animate-spin mr-2" size={20} /> : <Check className="mr-2" size={20} />}
                 {initialData ? 'Salvar Alterações' : 'Rastrear Entrega'}

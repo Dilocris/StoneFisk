@@ -9,6 +9,48 @@ import { clsx } from 'clsx';
 export function ManagementLayer() {
     const { data, updateExpense, deleteExpense, updateTask, deleteTask, deleteSupplier } = useProject();
     const [activeTab, setActiveTab] = useState<'expenses' | 'tasks' | 'suppliers'>('expenses');
+    const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+    // Clear selection when changing tabs
+    React.useEffect(() => {
+        setSelectedIds([]);
+    }, [activeTab]);
+
+    const getCurrentItems = () => {
+        if (activeTab === 'expenses') return data.expenses;
+        if (activeTab === 'tasks') return data.tasks;
+        return data.suppliers;
+    };
+
+    const handleSelectAll = () => {
+        const items = getCurrentItems();
+        if (selectedIds.length === items.length) {
+            setSelectedIds([]);
+        } else {
+            setSelectedIds(items.map(i => i.id));
+        }
+    };
+
+    const toggleSelection = (id: string) => {
+        if (selectedIds.includes(id)) {
+            setSelectedIds(prev => prev.filter(i => i !== id));
+        } else {
+            setSelectedIds(prev => [...prev, id]);
+        }
+    };
+
+    const handleBulkDelete = () => {
+        if (!confirm(`Tem certeza que deseja excluir ${selectedIds.length} itens selecionados?`)) return;
+
+        if (activeTab === 'expenses') {
+            selectedIds.forEach(id => deleteExpense(id));
+        } else if (activeTab === 'tasks') {
+            selectedIds.forEach(id => deleteTask(id));
+        } else {
+            selectedIds.forEach(id => deleteSupplier(id));
+        }
+        setSelectedIds([]);
+    };
 
     return (
         <section className="mt-12" id="management-section">
@@ -50,18 +92,28 @@ export function ManagementLayer() {
                     </div>
 
                     <div className="flex items-center gap-2">
-                        <button
-                            onClick={() => {
-                                const event = activeTab === 'expenses' ? 'open-expense-modal' :
-                                    activeTab === 'tasks' ? 'open-task-modal' :
-                                        'open-supplier-modal';
-                                window.dispatchEvent(new CustomEvent(event));
-                            }}
-                            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 shadow-lg shadow-blue-500/20 transition-all font-outfit"
-                        >
-                            <Plus size={18} />
-                            {activeTab === 'expenses' ? 'Novo Gasto' : activeTab === 'tasks' ? 'Nova Tarefa' : 'Novo Fornecedor'}
-                        </button>
+                        {selectedIds.length > 0 ? (
+                            <button
+                                onClick={handleBulkDelete}
+                                className="flex items-center gap-2 px-4 py-2 bg-rose-500 text-white rounded-xl text-sm font-bold hover:bg-rose-600 shadow-lg shadow-rose-500/20 transition-all animate-in fade-in slide-in-from-top-2"
+                            >
+                                <Trash2 size={18} />
+                                Excluir ({selectedIds.length})
+                            </button>
+                        ) : (
+                            <button
+                                onClick={() => {
+                                    const event = activeTab === 'expenses' ? 'open-expense-modal' :
+                                        activeTab === 'tasks' ? 'open-task-modal' :
+                                            'open-supplier-modal';
+                                    window.dispatchEvent(new CustomEvent(event));
+                                }}
+                                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 shadow-lg shadow-blue-500/20 transition-all font-outfit"
+                            >
+                                <Plus size={18} />
+                                {activeTab === 'expenses' ? 'Novo Gasto' : activeTab === 'tasks' ? 'Nova Tarefa' : 'Novo Fornecedor'}
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
@@ -71,6 +123,14 @@ export function ManagementLayer() {
                     <table className="w-full text-sm text-left">
                         <thead className="bg-slate-50/50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
                             <tr>
+                                <th className="w-12 px-6 py-4 bg-secondary border-b border-border">
+                                    <input
+                                        type="checkbox"
+                                        checked={getCurrentItems().length > 0 && selectedIds.length === getCurrentItems().length}
+                                        onChange={handleSelectAll}
+                                        className="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary bg-card cursor-pointer"
+                                    />
+                                </th>
                                 <th className="px-6 py-4 font-bold text-muted-foreground uppercase tracking-widest text-[9px] bg-secondary border-b border-border">
                                     {activeTab === 'suppliers' ? 'Fornecedor / Contato' : 'Nome / Item'}
                                 </th>
@@ -88,10 +148,18 @@ export function ManagementLayer() {
                         <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
                             {activeTab === 'expenses' ? (
                                 data.expenses.length === 0 ? (
-                                    <tr><td colSpan={6} className="px-6 py-12 text-center text-slate-400 italic">Nenhum gasto registrado.</td></tr>
+                                    <tr><td colSpan={7} className="px-6 py-12 text-center text-muted-foreground italic">Nenhum gasto registrado.</td></tr>
                                 ) : (
                                     data.expenses.map(exp => (
-                                        <tr key={exp.id} className="hover:bg-slate-50/30 dark:hover:bg-slate-800/20 transition-colors group">
+                                        <tr key={exp.id} className={clsx("hover:bg-muted/50 transition-colors group", selectedIds.includes(exp.id) && "bg-muted/30")}>
+                                            <td className="px-6 py-4">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selectedIds.includes(exp.id)}
+                                                    onChange={() => toggleSelection(exp.id)}
+                                                    className="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary bg-card cursor-pointer"
+                                                />
+                                            </td>
                                             <td className="px-6 py-4">
                                                 <div className="font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
                                                     {exp.name}
@@ -116,7 +184,7 @@ export function ManagementLayer() {
                                             <td className="px-6 py-4 text-xs font-bold text-slate-400">
                                                 {new Date(exp.dueDate || exp.date).toLocaleDateString('pt-BR')}
                                             </td>
-                                            <td className="px-6 py-4 text-right font-mono font-bold text-slate-600 dark:text-slate-400">R$ {exp.amount.toLocaleString()}</td>
+                                            <td className="px-6 py-4 text-right font-mono font-bold text-slate-600 dark:text-slate-400">R$ {exp.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                                             <td className="px-6 py-4 text-center">
                                                 <select
                                                     value={exp.status}
@@ -155,10 +223,18 @@ export function ManagementLayer() {
                                 )
                             ) : activeTab === 'tasks' ? (
                                 data.tasks.length === 0 ? (
-                                    <tr><td colSpan={6} className="px-6 py-12 text-center text-slate-400 italic">Nenhuma tarefa registrada.</td></tr>
+                                    <tr><td colSpan={7} className="px-6 py-12 text-center text-muted-foreground italic">Nenhuma tarefa registrada.</td></tr>
                                 ) : (
                                     data.tasks.map(task => (
-                                        <tr key={task.id} className="hover:bg-slate-50/30 dark:hover:bg-slate-800/20 transition-colors group">
+                                        <tr key={task.id} className={clsx("hover:bg-muted/50 transition-colors group", selectedIds.includes(task.id) && "bg-muted/30")}>
+                                            <td className="px-6 py-4">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selectedIds.includes(task.id)}
+                                                    onChange={() => toggleSelection(task.id)}
+                                                    className="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary bg-card cursor-pointer"
+                                                />
+                                            </td>
                                             <td className="px-6 py-4 font-bold text-slate-700 dark:text-slate-200">{task.title}</td>
                                             <td className="px-6 py-4 text-slate-500 text-xs">{task.category}</td>
                                             <td className="px-6 py-4 text-right font-mono text-slate-400 text-xs">
@@ -207,10 +283,18 @@ export function ManagementLayer() {
                                 )
                             ) : (
                                 data.suppliers.length === 0 ? (
-                                    <tr><td colSpan={6} className="px-6 py-12 text-center text-slate-400 italic">Nenhum fornecedor cadastrado.</td></tr>
+                                    <tr><td colSpan={7} className="px-6 py-12 text-center text-muted-foreground italic">Nenhum fornecedor cadastrado.</td></tr>
                                 ) : (
                                     data.suppliers.map(sup => (
-                                        <tr key={sup.id} className="hover:bg-slate-50/30 dark:hover:bg-slate-800/20 transition-colors group">
+                                        <tr key={sup.id} className={clsx("hover:bg-muted/50 transition-colors group", selectedIds.includes(sup.id) && "bg-muted/30")}>
+                                            <td className="px-6 py-4">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selectedIds.includes(sup.id)}
+                                                    onChange={() => toggleSelection(sup.id)}
+                                                    className="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary bg-card cursor-pointer"
+                                                />
+                                            </td>
                                             <td className="px-6 py-4">
                                                 <div className="font-bold text-slate-700 dark:text-slate-200">{sup.name}</div>
                                                 <div className="flex flex-col gap-0.5 mt-1">

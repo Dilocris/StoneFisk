@@ -133,13 +133,16 @@ export function GanttWorkspace() {
     const handlePrev = () => setViewOffset(prev => prev - 7);
     const handleJump = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.value) return;
-        const targetDate = new Date(e.target.value);
-        targetDate.setHours(0, 0, 0, 0);
+        // Append T00:00:00 to ensure local time parsing
+        const targetDate = new Date(e.target.value + 'T00:00:00');
         const today = new Date();
         today.setHours(0, 0, 0, 0);
+
         const diffTime = targetDate.getTime() - today.getTime();
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
         setViewOffset(diffDays);
+        e.target.value = ''; // Reset so we can select same date again if needed
     };
 
     return (

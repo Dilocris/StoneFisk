@@ -104,7 +104,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     const addExpense = (expense: Omit<Expense, 'id'>, installments: number = 1) => {
         const orderId = crypto.randomUUID();
         const newExpenses: Expense[] = [];
-        const baseAmount = expense.amount / installments;
+        const baseAmount = Math.round((expense.amount / installments) * 100) / 100;
         const startDate = new Date(expense.dueDate || expense.date);
 
         for (let i = 0; i < installments; i++) {
