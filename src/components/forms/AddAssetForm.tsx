@@ -2,11 +2,12 @@
 
 import React, { useState } from 'react';
 import { useProject } from '@/context/ProjectContext';
+import { Asset } from '@/lib/types';
 import { Check, Loader2, Package } from 'lucide-react';
 
 interface AddAssetFormProps {
     onSuccess: () => void;
-    initialData?: any;
+    initialData?: Asset;
 }
 
 export function AddAssetForm({ onSuccess, initialData }: AddAssetFormProps) {

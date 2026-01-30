@@ -198,7 +198,26 @@ All agents MUST read this to understand context before starting work.
 ## 2026-01-24: Environment Setup & Fix
 - **Action**: Installed Node.js 24 and restored dev environment.
 - **Details**: 
-    - Detected missing `npm` and installed Node.js via `winget`.
-    - Cleared corrupted `.next` cache to resolve Turbopack crash.
-    - Successfully started development server on port 3000.
+  - Detected missing `npm` and installed Node.js via `winget`.
+  - Cleared corrupted `.next` cache to resolve Turbopack crash.
+  - Successfully started development server on port 3000.
 - **Reason**: Enable access to the dashboard.
+
+## 2026-01-30: Stability & Data Integrity Hardening
+- **Action**: Reduced failure points in forms, dates, and management UI.
+- **Details**:
+  - Centralized date formatting via `src/lib/date.ts` and replaced UTC-sourced `toISOString()` usage in forms, Gantt, API seed, and export filename to avoid off-by-one local date issues.
+  - Normalized installment rounding in `ProjectContext` to distribute remainder cents across installments, preventing total mismatch.
+  - Hardened numeric parsing in expense and project settings forms, guarding against NaN values.
+  - Improved attachments UX in expenses (PDF-safe preview + allow PDF upload), and ensured status select remains available alongside attachment counts.
+  - Standardized `clsx` imports and tightened `AddAssetForm` typing.
+- **Reason**: Prevent subtle data drift, avoid invalid saves, and keep the UI responsive and consistent across locales.
+
+## 2026-01-30: Review Fixes (Local Use)
+- **Action**: Addressed review issues related to deletion, validation, and UI resilience.
+- **Details**:
+  - Added upload deletion endpoint and wired expense deletes/edits to remove orphaned files, with safeguards against shared-attachment deletion.
+  - Added task date validation, progress log stable keys, and modal scroll restoration.
+  - Clamped budget visualization to avoid divide-by-zero and over-budget visual overflow.
+  - Cleaned unused imports and aligned HEIC error messaging with accepted types.
+- **Reason**: Honor local-only storage expectations and reduce data integrity/UX edge cases.

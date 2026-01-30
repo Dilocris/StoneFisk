@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
 import { ProjectData } from '@/lib/types';
+import { formatDateInput } from '@/lib/date';
 
 const DB_PATH = path.join(process.cwd(), 'data', 'db.json');
 
@@ -14,7 +15,7 @@ async function ensureDb() {
             project: {
                 name: "Renovação Casa",
                 totalBudget: 50000,
-                startDate: new Date().toISOString().split('T')[0]
+                startDate: formatDateInput(new Date())
             },
             expenses: [],
             tasks: [],

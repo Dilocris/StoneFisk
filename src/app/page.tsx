@@ -14,7 +14,7 @@ import { AddTaskForm } from '@/components/forms/AddTaskForm';
 import { AddAssetForm } from '@/components/forms/AddAssetForm';
 import { AddSupplierForm } from '@/components/forms/AddSupplierForm';
 import { ProjectSettingsForm } from '@/components/forms/ProjectSettingsForm';
-import { Calendar, ChevronRight, Settings } from 'lucide-react';
+import { Settings } from 'lucide-react';
 import { generatePDFReport } from '@/lib/export';
 
 export default function Home() {

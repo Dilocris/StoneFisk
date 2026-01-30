@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useProject } from '@/context/ProjectContext';
 import { Category, CATEGORIES, Supplier } from '@/lib/types';
 import { Check, Loader2, Star, User, Phone, FileText, Mail, Globe } from 'lucide-react';
-import { clsx } from 'clsx';
+import clsx from 'clsx';
 
 interface AddSupplierFormProps {
     onSuccess: () => void;

@@ -3,8 +3,9 @@
 import React, { useState } from 'react';
 import { useProject } from '@/context/ProjectContext';
 import { Category, Expense, Room, CATEGORIES, ROOMS } from '@/lib/types';
-import { Check, Loader2, Paperclip, X, CreditCard, Calendar, Repeat } from 'lucide-react';
-import { clsx } from 'clsx';
+import { Check, Loader2, Paperclip, X, CreditCard, Calendar, Repeat, Plus, FileText } from 'lucide-react';
+import clsx from 'clsx';
+import { formatDateInput } from '@/lib/date';
 
 interface AddExpenseFormProps {
     onSuccess: () => void;
@@ -12,16 +13,18 @@ interface AddExpenseFormProps {
 }
 
 export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) {
-    const { data, addExpense, updateExpense, uploadFile } = useProject();
+    const { data, addExpense, updateExpense, uploadFile, deleteFile } = useProject();
     const [isLoading, setIsLoading] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
+    const [didSubmit, setDidSubmit] = useState(false);
+    const attachmentsRef = React.useRef<string[]>([]);
 
     const [name, setName] = useState(initialData?.name || '');
     const [amount, setAmount] = useState(initialData?.amount.toString() || '');
     const [category, setCategory] = useState<Category>(initialData?.category || CATEGORIES[0]);
     const [room, setRoom] = useState<Room>(initialData?.room || ROOMS[0]);
-    const [date, setDate] = useState(initialData?.date || new Date().toISOString().split('T')[0]);
-    const [dueDate, setDueDate] = useState(initialData?.dueDate || new Date().toISOString().split('T')[0]);
+    const [date, setDate] = useState(initialData?.date || formatDateInput(new Date()));
+    const [dueDate, setDueDate] = useState(initialData?.dueDate || formatDateInput(new Date()));
     const [paymentMethod, setPaymentMethod] = useState(initialData?.paymentMethod || 'PIX');
     const [status, setStatus] = useState<'Paid' | 'Pending' | 'Deposit'>(initialData?.status || 'Pending');
     const [supplierId, setSupplierId] = useState(initialData?.supplierId || '');
@@ -41,19 +44,29 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
             setAttachments(prev => [...prev, url]);
         }
         setIsUploading(false);
+        e.target.value = ''; // Reset input to allow re-uploading same file if deleted
     };
 
     const removeAttachment = (url: string) => {
         setAttachments(prev => prev.filter(a => a !== url));
+        if (!initialData) {
+            void deleteFile(url);
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
 
+        const parsedAmount = Number.parseFloat(amount);
+        if (!Number.isFinite(parsedAmount)) {
+            setIsLoading(false);
+            return;
+        }
+
         const expenseData = {
             name,
-            amount: Math.round(parseFloat(amount) * 100) / 100,
+            amount: Math.round(parsedAmount * 100) / 100,
             category,
             room,
             date,
@@ -68,8 +81,10 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
             if (initialData) {
                 updateExpense(initialData.id, expenseData);
             } else {
-                addExpense(expenseData, isInstallment ? parseInt(installmentCount) : 1);
+                const installmentTotal = isInstallment ? Math.max(1, Number.parseInt(installmentCount, 10) || 1) : 1;
+                addExpense(expenseData, installmentTotal);
             }
+            setDidSubmit(true);
             onSuccess();
         } catch (err) {
             console.error(err);
@@ -77,6 +92,18 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
             setIsLoading(false);
         }
     };
+
+    React.useEffect(() => {
+        attachmentsRef.current = attachments;
+    }, [attachments]);
+
+    React.useEffect(() => {
+        return () => {
+            if (!initialData && !didSubmit && attachmentsRef.current.length > 0) {
+                attachmentsRef.current.forEach(url => { void deleteFile(url); });
+            }
+        };
+    }, [deleteFile, didSubmit, initialData]);
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4 pt-4">
@@ -239,6 +266,47 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
                             PEND
                         </button>
                     </div>
+                </div>
+            </div>
+
+            {/* Attachments Section */}
+            <div className="p-4 bg-muted/20 rounded-2xl border border-dashed border-border group hover:bg-muted/30 transition-all">
+                <div className="flex items-center justify-between mb-2">
+                    <label className="text-[10px] font-bold text-muted-foreground uppercase flex items-center gap-2">
+                        <Paperclip size={12} /> Anexos e Fotos
+                    </label>
+                    {isUploading && <span className="text-[10px] text-primary animate-pulse">Enviando...</span>}
+                </div>
+
+                <div className="flex flex-wrap gap-2 mb-3">
+                    {attachments.map((url, index) => {
+                        const isPdf = url.toLowerCase().endsWith('.pdf');
+                        return (
+                        <div key={index} className="relative group/img w-16 h-16 rounded-lg overflow-hidden border border-border bg-secondary flex items-center justify-center">
+                            {isPdf ? (
+                                <div className="flex flex-col items-center gap-1 text-muted-foreground">
+                                    <FileText size={18} />
+                                    <span className="text-[8px] font-bold">PDF</span>
+                                </div>
+                            ) : (
+                                <img src={url} alt={`Anexo ${index + 1}`} className="w-full h-full object-cover" />
+                            )}
+                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
+                                <button
+                                    type="button"
+                                    onClick={() => removeAttachment(url)}
+                                    className="p-1 bg-rose-500 rounded-full text-white hover:bg-rose-600"
+                                >
+                                    <X size={12} />
+                                </button>
+                            </div>
+                        </div>
+                        );
+                    })}
+                    <label className="w-16 h-16 rounded-lg border-2 border-dashed border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary cursor-pointer hover:bg-white dark:hover:bg-slate-800 transition-all">
+                        <Plus size={20} />
+                        <input type="file" onChange={handleFileUpload} className="hidden" accept="image/*,image/heic,application/pdf" />
+                    </label>
                 </div>
             </div>
 

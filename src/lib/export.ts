@@ -1,6 +1,7 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { ProjectData } from './types';
+import { formatDateInput } from './date';
 
 export const generatePDFReport = (data: ProjectData) => {
     const doc = new jsPDF();
@@ -101,5 +102,5 @@ export const generatePDFReport = (data: ProjectData) => {
         );
     }
 
-    doc.save(`Relatorio_Reforma_${new Date().toISOString().split('T')[0]}.pdf`);
+    doc.save(`Relatorio_Reforma_${formatDateInput(new Date())}.pdf`);
 };

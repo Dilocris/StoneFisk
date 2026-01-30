@@ -3,8 +3,8 @@
 import React from 'react';
 import { useProject } from '@/context/ProjectContext';
 import { Card } from '@/components/ui/Card';
-import { Package, Truck, CheckCircle2, Trash2, Plus, User, Edit3 } from 'lucide-react';
-import { clsx } from 'clsx';
+import { Package, Truck, CheckCircle2, Trash2, Plus, User, Edit3, Image as ImageIcon } from 'lucide-react';
+import clsx from 'clsx';
 
 export function AssetsTracker() {
     const { data, toggleAssetStatus, deleteAsset } = useProject();
@@ -54,6 +54,18 @@ export function AssetsTracker() {
                                                 <User size={10} /> {data.suppliers.find(s => s.id === asset.supplierId)?.name || 'Fornecedor Desconhecido'}
                                             </div>
                                         )}
+                                        {/* Check for linked expense attachments */}
+                                        {(() => {
+                                            const linkedExpense = data.expenses.find(e => e.orderId === asset.id || e.id === asset.id);
+                                            if (linkedExpense?.attachments?.length) {
+                                                return (
+                                                    <div className="text-[9px] text-purple-500 font-bold flex items-center gap-1 mt-0.5">
+                                                        <ImageIcon size={10} /> {linkedExpense.attachments.length} Foto(s)
+                                                    </div>
+                                                );
+                                            }
+                                            return null;
+                                        })()}
                                     </div>
                                 </div>
                             </div>

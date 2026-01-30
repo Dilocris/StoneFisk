@@ -3,8 +3,8 @@
 import React, { useState } from 'react';
 import { useProject } from '@/context/ProjectContext';
 import { Card } from '@/components/ui/Card';
-import { Trash2, Edit3, Plus, Settings, Calendar, CreditCard, Phone, Mail, Globe, User } from 'lucide-react';
-import { clsx } from 'clsx';
+import { Trash2, Edit3, Plus, CreditCard, Phone, Mail, Globe, User, Image as ImageIcon } from 'lucide-react';
+import clsx from 'clsx';
 
 export function ManagementLayer() {
     const { data, updateExpense, deleteExpense, updateTask, deleteTask, deleteSupplier } = useProject();
@@ -141,7 +141,9 @@ export function ManagementLayer() {
                                 <th className="px-6 py-4 font-bold text-muted-foreground uppercase tracking-widest text-[9px] text-right bg-secondary border-b border-border">
                                     {activeTab === 'expenses' ? 'Valor' : activeTab === 'tasks' ? 'Previsão Fim' : ''}
                                 </th>
-                                <th className="px-6 py-4 font-bold text-muted-foreground uppercase tracking-widest text-[9px] text-center bg-secondary border-b border-border">Status</th>
+                                <th className="px-6 py-4 font-bold text-muted-foreground uppercase tracking-widest text-[9px] text-center bg-secondary border-b border-border">
+                                    {activeTab === 'suppliers' ? 'AvaliaÃ§Ã£o' : activeTab === 'expenses' ? 'Status / Anexos' : 'Status'}
+                                </th>
                                 <th className="px-6 py-4 font-bold text-muted-foreground uppercase tracking-widest text-[9px] text-right bg-secondary border-b border-border">Ações</th>
                             </tr>
                         </thead>
@@ -186,19 +188,29 @@ export function ManagementLayer() {
                                             </td>
                                             <td className="px-6 py-4 text-right font-mono font-bold text-slate-600 dark:text-slate-400">R$ {exp.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                                             <td className="px-6 py-4 text-center">
-                                                <select
-                                                    value={exp.status}
-                                                    onChange={(e) => updateExpense(exp.id, { status: e.target.value as any })}
-                                                    className={clsx(
-                                                        "px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-tighter cursor-pointer outline-none border transition-all",
-                                                        exp.status === 'Paid' ? "bg-success/10 text-success border-success/30" :
-                                                            exp.status === 'Deposit' ? "bg-info/10 text-info border-info/30" : "bg-warning/10 text-warning border-warning/30"
-                                                    )}
-                                                >
-                                                    <option value="Paid">Pago</option>
-                                                    <option value="Deposit">Sinal</option>
-                                                    <option value="Pending">Pendente</option>
-                                                </select>
+                                                <div className="flex items-center justify-center gap-2">
+                                                    <select
+                                                        value={exp.status}
+                                                        onChange={(e) => updateExpense(exp.id, { status: e.target.value as any })}
+                                                        className={clsx(
+                                                            "px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-tighter cursor-pointer outline-none border transition-all",
+                                                            exp.status === 'Paid' ? "bg-success/10 text-success border-success/30" :
+                                                                exp.status === 'Deposit' ? "bg-info/10 text-info border-info/30" : "bg-warning/10 text-warning border-warning/30"
+                                                        )}
+                                                    >
+                                                        <option value="Paid">Pago</option>
+                                                        <option value="Deposit">Sinal</option>
+                                                        <option value="Pending">Pendente</option>
+                                                    </select>
+                                                    {exp.attachments && exp.attachments.length > 0 ? (
+                                                        <button
+                                                            onClick={() => window.dispatchEvent(new CustomEvent('edit-expense', { detail: exp }))}
+                                                            className="flex items-center gap-1 text-[10px] font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded-full hover:bg-blue-100 transition-colors"
+                                                        >
+                                                            <ImageIcon size={12} /> {exp.attachments.length}
+                                                        </button>
+                                                    ) : null}
+                                                </div>
                                             </td>
                                             <td className="px-6 py-4 text-right">
                                                 <div className="flex justify-end gap-1">

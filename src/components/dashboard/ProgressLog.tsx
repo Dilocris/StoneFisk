@@ -87,8 +87,8 @@ export function ProgressLog() {
                         <p className="text-xs text-slate-400 italic">Nenhuma anotação ainda.</p>
                     ) : (
                         <ul className="space-y-4">
-                            {data.progressLog.map((entry, idx) => (
-                                <li key={idx} className="relative pl-4 border-l-2 border-slate-100 dark:border-slate-800 group">
+                            {data.progressLog.map((entry) => (
+                                <li key={entry.date} className="relative pl-4 border-l-2 border-slate-100 dark:border-slate-800 group">
                                     <div className="flex justify-between items-start">
                                         <span className="block text-[10px] font-bold text-blue-500 mb-1">
                                             {new Date(entry.date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}

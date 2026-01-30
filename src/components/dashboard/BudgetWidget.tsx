@@ -16,13 +16,17 @@ export function BudgetWidget() {
         .filter(e => e.status !== 'Paid')
         .reduce((sum, e) => sum + e.amount, 0);
 
-    const totalBudget = data.project.totalBudget || 1; // Prevent div by zero
-    const percentageUsed = Math.round((totalSpent / totalBudget) * 100);
+    const totalBudget = data.project.totalBudget;
+    const hasBudget = totalBudget > 0;
+    const percentageUsed = hasBudget ? Math.round((totalSpent / totalBudget) * 100) : 0;
+    const isOverBudget = hasBudget && totalSpent > totalBudget;
 
     // Bar heights in percentage
-    const paidHeight = (paidAmount / totalBudget) * 100;
-    const pendingHeight = (pendingAmount / totalBudget) * 100;
-    const availableHeight = Math.max(0, (remaining / totalBudget) * 100);
+    const spentTotal = paidAmount + pendingAmount;
+    const usedPercent = hasBudget ? Math.min(100, (spentTotal / totalBudget) * 100) : 0;
+    const paidHeight = spentTotal > 0 ? (paidAmount / spentTotal) * usedPercent : 0;
+    const pendingHeight = spentTotal > 0 ? (pendingAmount / spentTotal) * usedPercent : 0;
+    const availableHeight = hasBudget ? Math.max(0, (remaining / totalBudget) * 100) : 0;
 
     return (
         <Card title="Status Financeiro" className="h-[600px] flex flex-col overflow-hidden bg-card text-card-foreground">
@@ -51,7 +55,9 @@ export function BudgetWidget() {
                         {/* Floating Label - Centered on bar with translucency */}
                         <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 flex flex-col items-center bg-card/80 backdrop-blur-md px-4 py-3 rounded-2xl shadow-2xl border border-border z-10 transition-transform hover:scale-110">
                             <span className="text-3xl font-black text-foreground leading-none tracking-tighter">{percentageUsed}%</span>
-                            <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mt-1">Utilizado</span>
+                            <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mt-1">
+                                {isOverBudget ? 'Acima do OrÃ§amento' : 'Utilizado'}
+                            </span>
                         </div>
                     </div>
                 </div>

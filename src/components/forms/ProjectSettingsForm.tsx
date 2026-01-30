@@ -18,10 +18,16 @@ export function ProjectSettingsForm({ onSuccess }: ProjectSettingsFormProps) {
         e.preventDefault();
         setIsLoading(true);
 
+        const parsedBudget = Number.parseFloat(budget);
+        if (!Number.isFinite(parsedBudget)) {
+            setIsLoading(false);
+            return;
+        }
+
         try {
             updateProject({
                 name,
-                totalBudget: parseFloat(budget)
+                totalBudget: Math.max(0, parsedBudget)
             });
             onSuccess();
         } finally {

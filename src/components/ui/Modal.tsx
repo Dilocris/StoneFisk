@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { X } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -12,19 +12,17 @@ interface ModalProps {
 }
 
 export function Modal({ isOpen, onClose, title, children }: ModalProps) {
-    const modalRef = useRef<HTMLDivElement>(null);
-
     useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
             if (e.key === 'Escape') onClose();
         };
-        if (isOpen) {
-            document.addEventListener('keydown', handleEscape);
-            document.body.style.overflow = 'hidden';
-        }
+        if (!isOpen) return;
+        const previousOverflow = document.body.style.overflow;
+        document.addEventListener('keydown', handleEscape);
+        document.body.style.overflow = 'hidden';
         return () => {
             document.removeEventListener('keydown', handleEscape);
-            document.body.style.overflow = 'unset';
+            document.body.style.overflow = previousOverflow;
         };
     }, [isOpen, onClose]);
 
@@ -33,7 +31,6 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
             <div
-                ref={modalRef}
                 className={clsx(
                     "bg-white dark:bg-slate-900 rounded-xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all",
                     "animate-in fade-in zoom-in-95 duration-200"

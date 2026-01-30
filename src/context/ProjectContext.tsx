@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { ProjectData, Expense, Task, Project, Asset, Supplier } from '@/lib/types';
+import { formatDateInput } from '@/lib/date';
 
 // Initial empty state (will be populated from API)
 const DEFAULT_DATA: ProjectData = {
@@ -24,6 +25,7 @@ interface ProjectContextType {
     addTask: (task: Omit<Task, 'id'>) => void;
     updateProject: (project: Partial<Project>) => void;
     uploadFile: (file: File) => Promise<string | null>;
+    deleteFile: (url: string) => Promise<void>;
     getBudgetStats: () => { totalSpent: number; remaining: number };
     toggleAssetStatus: (id: string) => void;
     addAsset: (asset: Omit<Asset, 'id'>) => void;
@@ -46,7 +48,7 @@ const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
 export function ProjectProvider({ children }: { children: React.ReactNode }) {
     const [data, setData] = useState<ProjectData>(DEFAULT_DATA);
     const [isLoading, setIsLoading] = useState(true);
-    const saveTimerRef = React.useRef<NodeJS.Timeout | null>(null);
+    const saveTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
     const isFirstLoad = React.useRef(true);
 
     // 2. Load Data from API
@@ -101,23 +103,40 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
         };
     }, [data, isLoading]);
 
+    const deleteFile = async (url: string) => {
+        try {
+            await fetch('/api/upload', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url })
+            });
+        } catch (e) {
+            console.error("Delete upload failed", e);
+        }
+    };
+
     const addExpense = (expense: Omit<Expense, 'id'>, installments: number = 1) => {
         const orderId = crypto.randomUUID();
         const newExpenses: Expense[] = [];
-        const baseAmount = Math.round((expense.amount / installments) * 100) / 100;
-        const startDate = new Date(expense.dueDate || expense.date);
+        const installmentTotal = Number.isFinite(installments) && installments > 0 ? Math.floor(installments) : 1;
+        const totalCents = Math.round(expense.amount * 100);
+        const baseCents = Math.floor(totalCents / installmentTotal);
+        const remainder = totalCents - (baseCents * installmentTotal);
+        const baseDate = expense.dueDate || expense.date || formatDateInput(new Date());
+        const startDate = new Date(`${baseDate}T00:00:00`);
 
-        for (let i = 0; i < installments; i++) {
+        for (let i = 0; i < installmentTotal; i++) {
             const dueDate = new Date(startDate);
             dueDate.setMonth(dueDate.getMonth() + i);
+            const amountCents = baseCents + (i < remainder ? 1 : 0);
 
             newExpenses.push({
                 ...expense,
                 id: crypto.randomUUID(),
                 orderId,
-                amount: baseAmount,
-                dueDate: dueDate.toISOString().split('T')[0],
-                installmentInfo: installments > 1 ? { current: i + 1, total: installments } : undefined
+                amount: amountCents / 100,
+                dueDate: formatDateInput(dueDate),
+                installmentInfo: installmentTotal > 1 ? { current: i + 1, total: installmentTotal } : undefined
             });
         }
 
@@ -191,8 +210,17 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     };
 
     const updateExpense = (id: string, updates: Partial<Expense>) => {
+        const expenseToUpdate = data.expenses.find(e => e.id === id);
+        if (updates.attachments && expenseToUpdate?.attachments) {
+            const removed = expenseToUpdate.attachments.filter(url => !updates.attachments?.includes(url));
+            removed.forEach(url => {
+                const referencedElsewhere = data.expenses.some(exp => exp.id !== id && exp.attachments?.includes(url));
+                if (!referencedElsewhere) {
+                    void deleteFile(url);
+                }
+            });
+        }
         setData(prev => {
-            const expenseToUpdate = prev.expenses.find(e => e.id === id);
             return {
                 ...prev,
                 expenses: prev.expenses.map(exp => exp.id === id ? { ...exp, ...updates } : exp),
@@ -211,8 +239,16 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     };
 
     const deleteExpense = (id: string) => {
+        const expenseToDelete = data.expenses.find(e => e.id === id);
+        if (expenseToDelete?.attachments) {
+            expenseToDelete.attachments.forEach(url => {
+                const referencedElsewhere = data.expenses.some(exp => exp.id !== id && exp.attachments?.includes(url));
+                if (!referencedElsewhere) {
+                    void deleteFile(url);
+                }
+            });
+        }
         setData(prev => {
-            const expenseToDelete = prev.expenses.find(e => e.id === id);
             // Only delete the asset if it was solely linked to this expense 
             // OR if all installments of the same order are being deleted (common case for single expenses)
             const remainingWithThisOrder = prev.expenses.filter(e =>
@@ -291,6 +327,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
             addTask,
             updateProject,
             uploadFile,
+            deleteFile,
             getBudgetStats,
             toggleAssetStatus,
             addAsset,

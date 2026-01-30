@@ -4,7 +4,8 @@ import React, { useState } from 'react';
 import { useProject } from '@/context/ProjectContext';
 import { Category, Task, Room, CATEGORIES, ROOMS } from '@/lib/types';
 import { Check, Loader2 } from 'lucide-react';
-import { clsx } from 'clsx';
+import clsx from 'clsx';
+import { formatDateInput } from '@/lib/date';
 
 interface AddTaskFormProps {
     onSuccess: () => void;
@@ -14,18 +15,26 @@ interface AddTaskFormProps {
 export function AddTaskForm({ onSuccess, initialData }: AddTaskFormProps) {
     const { data, addTask, updateTask } = useProject();
     const [isLoading, setIsLoading] = useState(false);
+    const [dateError, setDateError] = useState('');
 
     const [title, setTitle] = useState(initialData?.title || '');
     const [category, setCategory] = useState<Category>(initialData?.category || 'Mão de Obra');
     const [room, setRoom] = useState<Room>(initialData?.room || ROOMS[0]);
-    const [startDate, setStartDate] = useState(initialData?.startDate || new Date().toISOString().split('T')[0]);
-    const [endDate, setEndDate] = useState(initialData?.endDate || new Date().toISOString().split('T')[0]);
+    const [startDate, setStartDate] = useState(initialData?.startDate || formatDateInput(new Date()));
+    const [endDate, setEndDate] = useState(initialData?.endDate || formatDateInput(new Date()));
     const [status, setStatus] = useState<Task['status']>(initialData?.status || 'Pending');
     const [supplierId, setSupplierId] = useState(initialData?.supplierId || '');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
+        setDateError('');
+
+        if (endDate < startDate) {
+            setDateError('A data final deve ser igual ou posterior Ã  data de inÃ­cio.');
+            setIsLoading(false);
+            return;
+        }
 
         const taskData = {
             title,
@@ -70,7 +79,10 @@ export function AddTaskForm({ onSuccess, initialData }: AddTaskFormProps) {
                         required
                         type="date"
                         value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
+                        onChange={(e) => {
+                            setStartDate(e.target.value);
+                            if (dateError) setDateError('');
+                        }}
                         className="w-full p-3 bg-secondary rounded-xl border border-input focus:ring-2 focus:ring-primary outline-none transition-all text-sm font-bold text-foreground"
                     />
                 </div>
@@ -80,11 +92,19 @@ export function AddTaskForm({ onSuccess, initialData }: AddTaskFormProps) {
                         required
                         type="date"
                         value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
+                        onChange={(e) => {
+                            setEndDate(e.target.value);
+                            if (dateError) setDateError('');
+                        }}
                         className="w-full p-3 bg-secondary rounded-xl border border-input focus:ring-2 focus:ring-primary outline-none transition-all text-sm font-bold text-foreground"
                     />
                 </div>
             </div>
+            {dateError && (
+                <p className="text-[10px] font-bold text-rose-500 uppercase tracking-wider">
+                    {dateError}
+                </p>
+            )}
 
             <div className="grid grid-cols-2 gap-4">
                 <div>

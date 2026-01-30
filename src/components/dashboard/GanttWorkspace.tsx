@@ -3,8 +3,9 @@
 import React, { useMemo } from 'react';
 import { useProject } from '@/context/ProjectContext';
 import { Card } from '@/components/ui/Card';
-import { clsx } from 'clsx';
+import clsx from 'clsx';
 import { Calendar as CalendarIcon, Info, ChevronLeft, ChevronRight } from 'lucide-react';
+import { formatDateInput } from '@/lib/date';
 
 export function GanttWorkspace() {
     const { data } = useProject();
@@ -62,7 +63,7 @@ export function GanttWorkspace() {
             dayDate.setDate(dayDate.getDate() + i);
             const isWeekend = dayDate.getDay() === 0 || dayDate.getDay() === 6;
             const isToday = dayDate.toDateString() === todayStr;
-            const dateISO = dayDate.toISOString().split('T')[0];
+            const dateISO = formatDateInput(dayDate);
             const holiday = BRAZILIAN_HOLIDAYS.find(h => h.date === dateISO);
 
             dayLines.push({
