@@ -1,7 +1,8 @@
 {
-  "name": "renovate-dashboard",
+  "name": "stonefisk",
   "version": "0.1.0",
   "private": true,
+  "description": "StoneFisk renovation dashboard (local-first, personal use).",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

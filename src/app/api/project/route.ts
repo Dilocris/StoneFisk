@@ -13,7 +13,7 @@ async function ensureDb() {
     } catch {
         const initialData: ProjectData = {
             project: {
-                name: "Renovação Casa",
+                name: "StoneFisk Project",
                 totalBudget: 50000,
                 startDate: formatDateInput(new Date())
             },

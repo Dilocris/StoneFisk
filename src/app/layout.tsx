@@ -6,8 +6,8 @@ import { ProjectProvider } from "@/context/ProjectContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Reforma Dashboard",
-  description: "Master Control for Home Renovation",
+  title: "StoneFisk Dashboard",
+  description: "StoneFisk renovation dashboard",
 };
 
 export default function RootLayout({

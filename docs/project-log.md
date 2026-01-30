@@ -1,4 +1,4 @@
-# Project Log - Home Renovation Dashboard
+# Project Log - StoneFisk Renovation Dashboard
 
 This file tracks the evolution, major decisions, and interventions in the project.
 All agents MUST read this to understand context before starting work.
@@ -11,14 +11,14 @@ All agents MUST read this to understand context before starting work.
   - Source code is now in `src/`.
 - **Reason**: Simplification. User wanted a "smart structure" without redundant subfolders.
 
-## 2026-01-15: Next.js Pivot (Master Control)
+## 2026-01-15: Next.js Pivot (StoneFisk)
 - **Action**: Replaced Vanilla JS prototype with **Next.js 14**.
 - **Details**:
   - Implemented `ProjectContext` for global state (localStorage persistence).
   - Built `BudgetWidget` (Recharts) and `TimelineWidget`.
   - Added "Add Expense" Modal with functional form.
   - Setup Tailwind CSS with Dark Mode support.
-- **Reason**: User provided new PRD requesting a premium, scalable "Master Control" dashboard.
+- **Reason**: User provided new PRD requesting a premium, scalable StoneFisk dashboard.
 
 ## 2026-01-15: Initial Prototype (Vanilla JS) [ARCHIVED]
 - **Action**: Created modular HTML/JS/CSS structure.

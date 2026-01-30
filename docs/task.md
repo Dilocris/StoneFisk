@@ -1,4 +1,4 @@
-# Roadmap: Home Renovation Dashboard ("Master Control")
+# Roadmap: StoneFisk Renovation Dashboard
 
 ## ✅ Phase 1: Foundation (Completed)
 - [x] specific PRD Analysis & Setup <!-- id: 0 -->

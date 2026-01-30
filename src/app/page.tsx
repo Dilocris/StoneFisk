@@ -75,7 +75,7 @@ export default function Home() {
       <nav className="fixed top-0 left-0 right-0 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 z-50 px-6 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-black text-xs">AG</div>
-          <span className="font-bold text-slate-800 dark:text-white tracking-tight">Antigravity Dashboard</span>
+          <span className="font-bold text-slate-800 dark:text-white tracking-tight">StoneFisk Dashboard</span>
         </div>
         <div className="flex items-center gap-4">
           <div className="text-right">

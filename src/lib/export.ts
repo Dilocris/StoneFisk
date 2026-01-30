@@ -70,7 +70,7 @@ export const generatePDFReport = (data: ProjectData) => {
         if ((doc as any).lastAutoTable.finalY > 220) doc.addPage();
 
         doc.setFontSize(12);
-        doc.text('Progresso da Obra (Tarefas)', 14, (doc as any).lastAutoTable.finalY + 15);
+        doc.text('Progresso do Projeto (Tarefas)', 14, (doc as any).lastAutoTable.finalY + 15);
 
         const taskRows = data.tasks.map(task => [
             task.title,
@@ -95,12 +95,12 @@ export const generatePDFReport = (data: ProjectData) => {
         doc.setFontSize(8);
         doc.setTextColor(148, 163, 184);
         doc.text(
-            `Página ${i} de ${pageCount} | Master Control Dashboard`,
+            `Página ${i} de ${pageCount} | StoneFisk Dashboard`,
             pageWidth / 2,
             doc.internal.pageSize.height - 10,
             { align: 'center' }
         );
     }
 
-    doc.save(`Relatorio_Reforma_${formatDateInput(new Date())}.pdf`);
+    doc.save(`StoneFisk_Report_${formatDateInput(new Date())}.pdf`);
 };
