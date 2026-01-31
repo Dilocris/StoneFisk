@@ -41,9 +41,23 @@ interface ProjectContextType {
     addSupplier: (supplier: Omit<Supplier, 'id'>) => void;
     updateSupplier: (id: string, supplier: Partial<Supplier>) => void;
     deleteSupplier: (id: string) => void;
+    resetData: (options?: { keepProject?: boolean }) => void;
+    importData: (payload: ProjectData) => boolean;
 }
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
+
+function isValidProjectData(body: any): body is ProjectData {
+    if (!body || typeof body !== 'object') return false;
+    const requiredKeys: (keyof ProjectData)[] = ['project', 'expenses', 'tasks', 'assets', 'suppliers', 'progressLog'];
+    if (!requiredKeys.every(key => key in body)) return false;
+    if (typeof body.project !== 'object' || typeof body.project.name !== 'string' || typeof body.project.totalBudget !== 'number') {
+        return false;
+    }
+    const collections: (keyof ProjectData)[] = ['expenses', 'tasks', 'assets', 'suppliers', 'progressLog'];
+    if (!collections.every(key => Array.isArray(body[key]))) return false;
+    return true;
+}
 
 export function ProjectProvider({ children }: { children: React.ReactNode }) {
     const [data, setData] = useState<ProjectData>(DEFAULT_DATA);
@@ -313,6 +327,31 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
         return null;
     };
 
+    const resetData = (options: { keepProject?: boolean } = {}) => {
+        const keepProject = options.keepProject !== false;
+        setData(prev => ({
+            project: keepProject
+                ? { ...prev.project, startDate: formatDateInput(new Date()) }
+                : { name: 'StoneFisk Project', totalBudget: 0, startDate: formatDateInput(new Date()) },
+            expenses: [],
+            tasks: [],
+            assets: [],
+            suppliers: [],
+            progressLog: []
+        }));
+    };
+
+    const importData = (payload: ProjectData) => {
+        if (!isValidProjectData(payload)) return false;
+        setData({
+            ...payload,
+            assets: payload.assets || [],
+            suppliers: payload.suppliers || [],
+            progressLog: payload.progressLog || []
+        });
+        return true;
+    };
+
     const getBudgetStats = () => {
         const totalSpent = data.expenses.reduce((acc, curr) => acc + curr.amount, 0);
         const remaining = data.project.totalBudget - totalSpent;
@@ -342,7 +381,9 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
             deleteTask,
             addSupplier,
             updateSupplier,
-            deleteSupplier
+            deleteSupplier,
+            resetData,
+            importData
         }}>
             {children}
         </ProjectContext.Provider>

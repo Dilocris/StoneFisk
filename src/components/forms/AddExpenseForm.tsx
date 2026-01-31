@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useProject } from '@/context/ProjectContext';
-import { Category, Expense, Room, CATEGORIES, ROOMS } from '@/lib/types';
+import { Category, Expense, CATEGORIES } from '@/lib/types';
 import { Check, Loader2, Paperclip, X, CreditCard, Calendar, Repeat, Plus, FileText } from 'lucide-react';
 import clsx from 'clsx';
 import { formatDateInput } from '@/lib/date';
@@ -22,7 +22,6 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
     const [name, setName] = useState(initialData?.name || '');
     const [amount, setAmount] = useState(initialData?.amount.toString() || '');
     const [category, setCategory] = useState<Category>(initialData?.category || CATEGORIES[0]);
-    const [room, setRoom] = useState<Room>(initialData?.room || ROOMS[0]);
     const [date, setDate] = useState(initialData?.date || formatDateInput(new Date()));
     const [dueDate, setDueDate] = useState(initialData?.dueDate || formatDateInput(new Date()));
     const [paymentMethod, setPaymentMethod] = useState(initialData?.paymentMethod || 'PIX');
@@ -68,7 +67,6 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
             name,
             amount: Math.round(parsedAmount * 100) / 100,
             category,
-            room,
             date,
             dueDate,
             paymentMethod,
@@ -220,18 +218,7 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
                     )}
                 </div>
             )}
-
             <div className="flex gap-4 p-4 bg-card rounded-2xl border border-border">
-                <div className="flex-1">
-                    <label className="block text-[10px] font-bold text-muted-foreground uppercase mb-2">Cômodo</label>
-                    <select
-                        value={room}
-                        onChange={(e) => setRoom(e.target.value as Room)}
-                        className="w-full bg-secondary text-foreground rounded-xl border border-input focus:ring-2 focus:ring-primary outline-none transition-all p-2 text-xs font-bold"
-                    >
-                        {ROOMS.map(r => <option key={r} value={r} className="bg-secondary text-foreground">{r}</option>)}
-                    </select>
-                </div>
                 <div className="flex-1">
                     <label className="block text-[10px] font-bold text-muted-foreground uppercase mb-2">Status</label>
                     <div className="flex gap-2">

@@ -34,7 +34,7 @@ export function HealthCheck() {
     else if (totalDelayDays > 0) timelineStatus = 'warning';
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Financial Health Card */}
             <Card className={clsx(
                 "relative overflow-hidden transition-all duration-200 ease-out border-l-4",

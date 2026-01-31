@@ -41,7 +41,7 @@ export function ProgressLog() {
     };
 
     return (
-        <Card title="Diário da Obra" className="min-h-[200px] max-h-[600px] flex flex-col">
+        <Card title="Diário da Obra" className="h-[520px] flex flex-col">
             <div className="flex justify-between items-center mb-4">
                 <p className="text-sm text-slate-500">O que mudou hoje?</p>
                 {editingDate && (

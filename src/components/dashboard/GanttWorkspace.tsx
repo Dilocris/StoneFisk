@@ -10,7 +10,8 @@ import { formatDateInput } from '@/lib/date';
 export function GanttWorkspace() {
     const { data } = useProject();
     const [hoveredTaskId, setHoveredTaskId] = React.useState<string | null>(null);
-    const [viewOffset, setViewOffset] = React.useState(0); // Offset in days from "Project Start" or "Today"? User wants scrolable to past.
+    const [viewOffset, setViewOffset] = React.useState(0);
+    const [totalDays, setTotalDays] = React.useState(30);
 
     const BRAZILIAN_HOLIDAYS = useMemo(() => [
         { date: '2026-01-01', name: 'Ano Novo' },
@@ -28,11 +29,10 @@ export function GanttWorkspace() {
     ], []);
 
     const { timelineGrid, taskBars, dayLines, windowStart, totalDelayDays } = useMemo(() => {
-        const start = new Date();
-        start.setHours(0, 0, 0, 0);
-        start.setDate(start.getDate() + viewOffset);
-
-        const totalDays = 90;
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const start = new Date(today);
+        start.setDate(start.getDate() - Math.floor(totalDays / 2) + viewOffset);
         const windowEnd = new Date(start);
         windowEnd.setDate(windowEnd.getDate() + totalDays);
 
@@ -57,7 +57,7 @@ export function GanttWorkspace() {
 
         // Generate Day Lines & Weekends
         const dayLines: { day: number; isWeekend: boolean; isToday: boolean; holiday?: { date: string; name: string }; left: string; width: string; }[] = [];
-        const todayStr = new Date().toDateString();
+        const todayStr = today.toDateString();
         for (let i = 0; i < totalDays; i++) {
             const dayDate = new Date(start);
             dayDate.setDate(dayDate.getDate() + i);
@@ -75,10 +75,7 @@ export function GanttWorkspace() {
                 width: `${(1 / totalDays) * 100}%`
             });
         }
-
         // Map Tasks to Bars
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
 
         const bars = data.tasks.map((task) => {
             // Fix: Use Date.parse or ensure 'YYYY-MM-DD' is treated as start of day local
@@ -128,10 +125,12 @@ export function GanttWorkspace() {
             windowStart: start,
             totalDelayDays
         };
-    }, [data.tasks, viewOffset, BRAZILIAN_HOLIDAYS]);
+    }, [data.tasks, viewOffset, totalDays, BRAZILIAN_HOLIDAYS]);
 
     const handleNext = () => setViewOffset(prev => prev + 7);
     const handlePrev = () => setViewOffset(prev => prev - 7);
+    const handleZoomIn = () => setTotalDays(prev => Math.max(30, prev - 15));
+    const handleZoomOut = () => setTotalDays(prev => Math.min(180, prev + 15));
     const handleJump = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.value) return;
         // Append T00:00:00 to ensure local time parsing
@@ -148,50 +147,16 @@ export function GanttWorkspace() {
 
     return (
         <Card id="gantt-section" className="mb-8 border-none shadow-xl bg-card overflow-hidden">
-            <div className="flex flex-col md:flex-row justify-between items-center mb-6 px-4 gap-4">
-                <div className="flex items-center gap-4">
+            <div className="flex flex-col gap-4 mb-6 px-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
                     <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
                         <CalendarIcon className="text-primary" size={20} />
                         Cronograma
                     </h2>
 
-                    <div className="flex items-center bg-secondary rounded-2xl p-1.5 gap-2 shadow-sm border border-border">
-                        <button
-                            onClick={handlePrev}
-                            className="p-2 hover:bg-muted rounded-xl text-primary transition-all duration-150 ease-out hover:scale-110 active:scale-95"
-                            title="7 dias para trás"
-                        >
-                            <ChevronLeft size={20} strokeWidth={3} />
-                        </button>
-                        <button
-                            onClick={() => setViewOffset(0)}
-                            className="px-4 py-1.5 text-[11px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary transition-all duration-150 ease-out border-x border-border"
-                        >
-                            Hoje
-                        </button>
-                        <button
-                            onClick={handleNext}
-                            className="p-2 hover:bg-muted rounded-xl text-primary transition-all duration-150 ease-out hover:scale-110 active:scale-95"
-                            title="7 dias para frente"
-                        >
-                            <ChevronRight size={20} strokeWidth={3} />
-                        </button>
-                    </div>
-
-                    <div className="relative group/date">
-                        <input
-                            type="date"
-                            onChange={handleJump}
-                            className="absolute inset-0 opacity-0 cursor-pointer z-10"
-                        />
-                        <button className="flex items-center gap-2 px-3 py-2 bg-slate-50 dark:bg-slate-800 text-[10px] font-bold text-slate-500 rounded-xl border border-slate-100 dark:border-slate-700 hover:border-blue-300 transition-all duration-150 ease-out uppercase tracking-tight">
-                            <CalendarIcon size={14} /> Pular p/ Data
-                        </button>
-                    </div>
-
                     {timelineGrid.length > 0 && (
                         <div className={clsx(
-                            "flex items-center gap-2 px-3 py-2 rounded-xl border font-bold transition-all duration-150 ease-out animate-in fade-in slide-in-from-left-4",
+                            "flex items-center gap-2 px-3 py-2 rounded-xl border font-bold transition-all duration-150 ease-out",
                             totalDelayDays > 0
                                 ? "bg-rose-500/10 border-rose-500/20 text-rose-500 animate-pulse"
                                 : "bg-emerald-500/10 border-emerald-500/20 text-emerald-500"
@@ -204,12 +169,79 @@ export function GanttWorkspace() {
                     )}
                 </div>
 
-                <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-tight text-muted-foreground">
-                    <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-neutral" /> Pendente</div>
-                    <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-warning" /> Em Curso</div>
-                    <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-success" /> Pronto</div>
-                    <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-danger" /> Bloqueado</div>
-                    <div className="flex items-center gap-1 ml-2"><span className="w-3 h-3 rounded-sm border-2 border-danger animate-pulse" /> Atrasado</div>
+                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                    <div className="flex flex-wrap items-end gap-4">
+                        <div className="flex flex-col gap-1">
+                            <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Navegacao</span>
+                            <div className="flex items-center bg-secondary rounded-2xl p-1.5 gap-2 shadow-sm border border-border">
+                                <button
+                                    onClick={handlePrev}
+                                    className="p-2 hover:bg-muted rounded-xl text-primary transition-all duration-150 ease-out hover:scale-110 active:scale-95"
+                                    title="7 dias para tras"
+                                >
+                                    <ChevronLeft size={20} strokeWidth={3} />
+                                </button>
+                                <button
+                                    onClick={() => setViewOffset(0)}
+                                    className="px-4 py-1.5 text-[11px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary transition-all duration-150 ease-out border-x border-border"
+                                >
+                                    Hoje
+                                </button>
+                                <button
+                                    onClick={handleNext}
+                                    className="p-2 hover:bg-muted rounded-xl text-primary transition-all duration-150 ease-out hover:scale-110 active:scale-95"
+                                    title="7 dias para frente"
+                                >
+                                    <ChevronRight size={20} strokeWidth={3} />
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col gap-1">
+                            <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Zoom</span>
+                            <div className="flex items-center bg-secondary rounded-2xl p-1.5 gap-1 shadow-sm border border-border">
+                                <button
+                                    onClick={handleZoomIn}
+                                    className="px-3 py-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary transition-all duration-150 ease-out rounded-xl hover:bg-muted"
+                                    title="Menos dias visiveis"
+                                >
+                                    +
+                                </button>
+                                <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground px-1">
+                                    {totalDays} dias
+                                </span>
+                                <button
+                                    onClick={handleZoomOut}
+                                    className="px-3 py-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary transition-all duration-150 ease-out rounded-xl hover:bg-muted"
+                                    title="Mais dias visiveis"
+                                >
+                                    -
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col gap-1">
+                            <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Data</span>
+                            <div className="relative group/date">
+                                <input
+                                    type="date"
+                                    onChange={handleJump}
+                                    className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                                />
+                                <button className="flex items-center gap-2 px-3 py-2 bg-slate-50 dark:bg-slate-800 text-[10px] font-bold text-slate-500 rounded-xl border border-slate-100 dark:border-slate-700 hover:border-blue-300 transition-all duration-150 ease-out uppercase tracking-tight">
+                                    <CalendarIcon size={14} /> Pular p/ Data
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-3 text-[10px] font-bold uppercase tracking-tight text-muted-foreground">
+                        <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-neutral" /> Pendente</div>
+                        <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-warning" /> Em Curso</div>
+                        <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-success" /> Pronto</div>
+                        <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-danger" /> Bloqueado</div>
+                        <div className="flex items-center gap-1 ml-2"><span className="w-3 h-3 rounded-sm border-2 border-danger animate-pulse" /> Atrasado</div>
+                    </div>
                 </div>
             </div>
 

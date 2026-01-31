@@ -29,8 +29,8 @@ export function BudgetWidget() {
     const availableHeight = hasBudget ? Math.max(0, (remaining / totalBudget) * 100) : 0;
 
     return (
-        <Card title="Status Financeiro" className="h-[600px] flex flex-col overflow-hidden bg-card text-card-foreground">
-            <div className="flex-1 flex flex-col lg:flex-row items-center justify-around gap-8 px-6 py-4">
+        <Card title="Status Financeiro" className="h-[520px] flex flex-col overflow-hidden bg-card text-card-foreground">
+            <div className="flex-1 flex flex-col lg:flex-row items-center justify-around gap-8 px-6 py-4 pb-6">
 
                 {/* Visual Area - Vertical Thermometer */}
                 <div className="h-full py-8 flex items-center justify-center">

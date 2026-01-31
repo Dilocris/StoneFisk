@@ -70,14 +70,14 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#fcfcfd] dark:bg-slate-950 pb-20">
+    <main className="min-h-screen bg-[#fcfcfd] dark:bg-slate-950 pb-24">
       {/* Top Utility Nav */}
-      <nav className="fixed top-0 left-0 right-0 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 z-50 px-6 flex items-center justify-between">
+      <nav className="fixed top-0 left-0 right-0 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 z-50 px-4 md:px-8 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-black text-xs">AG</div>
           <span className="font-bold text-slate-800 dark:text-white tracking-tight">StoneFisk Dashboard</span>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <div className="text-right">
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Hoje</p>
             <p className="text-xs font-bold text-slate-600 dark:text-slate-300">{new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' })}</p>
@@ -91,8 +91,8 @@ export default function Home() {
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto px-6 pt-32">
-        <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 pt-28">
+        <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
               <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase rounded-md">Em Progresso</span>
@@ -114,23 +114,23 @@ export default function Home() {
         </header>
 
         {/* Strategic Hero (Gantt) */}
-        <section className="relative group">
+        <section className="relative group mb-10">
           <GanttWorkspace />
         </section>
 
         {/* Pulse & Logistics Layer */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12 items-stretch">
           {/* Left Column: Health & Progress */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-6">
             <HealthCheck />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <AssetsTracker />
               <ProgressLog />
             </div>
           </div>
 
           {/* Right Column: Financials */}
-          <div className="space-y-8">
+          <div className="space-y-6">
             <BudgetWidget />
           </div>
         </div>

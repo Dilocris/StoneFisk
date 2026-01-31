@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useProject } from '@/context/ProjectContext';
+import { Category, CATEGORIES } from '@/lib/types';
 import { Card } from '@/components/ui/Card';
 import { Trash2, Edit3, Plus, CreditCard, Phone, Mail, Globe, User, Image as ImageIcon } from 'lucide-react';
 import clsx from 'clsx';
@@ -10,10 +11,14 @@ export function ManagementLayer() {
     const { data, updateExpense, deleteExpense, updateTask, deleteTask, deleteSupplier } = useProject();
     const [activeTab, setActiveTab] = useState<'expenses' | 'tasks' | 'suppliers'>('expenses');
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [categoryFilter, setCategoryFilter] = useState<'all' | Category>('all');
 
     // Clear selection when changing tabs
     React.useEffect(() => {
         setSelectedIds([]);
+        setSearchTerm('');
+        setCategoryFilter('all');
     }, [activeTab]);
 
     const getCurrentItems = () => {
@@ -21,6 +26,41 @@ export function ManagementLayer() {
         if (activeTab === 'tasks') return data.tasks;
         return data.suppliers;
     };
+
+    const getFilteredItems = () => {
+        const items = getCurrentItems();
+        const term = searchTerm.trim().toLowerCase();
+
+        return items.filter((item: any) => {
+            if (categoryFilter !== 'all') {
+                if ('category' in item && item.category !== categoryFilter) return false;
+            }
+            if (!term) return true;
+            if (activeTab === 'expenses') {
+                return (
+                    item.name?.toLowerCase().includes(term) ||
+                    item.category?.toLowerCase().includes(term) ||
+                    item.paymentMethod?.toLowerCase().includes(term)
+                );
+            }
+            if (activeTab === 'tasks') {
+                return (
+                    item.title?.toLowerCase().includes(term) ||
+                    item.category?.toLowerCase().includes(term) ||
+                    item.status?.toLowerCase().includes(term)
+                );
+            }
+            return (
+                item.name?.toLowerCase().includes(term) ||
+                item.phone1?.toLowerCase().includes(term) ||
+                item.phone2?.toLowerCase().includes(term) ||
+                item.email?.toLowerCase().includes(term) ||
+                item.category?.toLowerCase().includes(term)
+            );
+        });
+    };
+
+    const filteredItems = getFilteredItems();
 
     const handleSelectAll = () => {
         const items = getCurrentItems();
@@ -54,13 +94,38 @@ export function ManagementLayer() {
 
     return (
         <section className="mt-12" id="management-section">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-6">
                 <div>
                     <h2 className="text-2xl font-bold text-slate-800 dark:text-white">Gerenciamento Detalhado</h2>
                     <p className="text-sm text-slate-500">Controle total sobre cada lançamento</p>
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex flex-wrap items-center gap-3">
+                    <div className="flex items-center gap-2">
+                        {selectedIds.length > 0 ? (
+                            <button
+                                onClick={handleBulkDelete}
+                                className="flex items-center gap-2 px-4 py-2 bg-rose-500 text-white rounded-xl text-sm font-bold hover:bg-rose-600 shadow-lg shadow-rose-500/20 transition-all duration-150 ease-out animate-in fade-in slide-in-from-top-2"
+                            >
+                                <Trash2 size={18} />
+                                Excluir ({selectedIds.length})
+                            </button>
+                        ) : (
+                            <button
+                                onClick={() => {
+                                    const event = activeTab === 'expenses' ? 'open-expense-modal' :
+                                        activeTab === 'tasks' ? 'open-task-modal' :
+                                            'open-supplier-modal';
+                                    window.dispatchEvent(new CustomEvent(event));
+                                }}
+                                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 shadow-lg shadow-blue-500/20 transition-all duration-150 ease-out font-outfit"
+                            >
+                                <Plus size={18} />
+                                {activeTab === 'expenses' ? 'Novo Gasto' : activeTab === 'tasks' ? 'Nova Tarefa' : 'Novo Fornecedor'}
+                            </button>
+                        )}
+                    </div>
+
                     <div className="flex gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
                         <button
                             onClick={() => setActiveTab('expenses')}
@@ -90,31 +155,31 @@ export function ManagementLayer() {
                             Fornecedores
                         </button>
                     </div>
+                </div>
+            </div>
 
-                    <div className="flex items-center gap-2">
-                        {selectedIds.length > 0 ? (
-                            <button
-                                onClick={handleBulkDelete}
-                                className="flex items-center gap-2 px-4 py-2 bg-rose-500 text-white rounded-xl text-sm font-bold hover:bg-rose-600 shadow-lg shadow-rose-500/20 transition-all duration-150 ease-out animate-in fade-in slide-in-from-top-2"
-                            >
-                                <Trash2 size={18} />
-                                Excluir ({selectedIds.length})
-                            </button>
-                        ) : (
-                            <button
-                                onClick={() => {
-                                    const event = activeTab === 'expenses' ? 'open-expense-modal' :
-                                        activeTab === 'tasks' ? 'open-task-modal' :
-                                            'open-supplier-modal';
-                                    window.dispatchEvent(new CustomEvent(event));
-                                }}
-                                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 shadow-lg shadow-blue-500/20 transition-all duration-150 ease-out font-outfit"
-                            >
-                                <Plus size={18} />
-                                {activeTab === 'expenses' ? 'Novo Gasto' : activeTab === 'tasks' ? 'Nova Tarefa' : 'Novo Fornecedor'}
-                            </button>
-                        )}
-                    </div>
+            <div className="flex flex-col md:flex-row md:items-end gap-3 mb-6">
+                <div className="flex-1">
+                    <span className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Busca</span>
+                    <input
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        placeholder={activeTab === 'suppliers' ? 'Buscar por nome, telefone ou email...' : 'Buscar por nome, categoria ou status...'}
+                        className="w-full p-3 bg-secondary rounded-xl border border-input focus:ring-2 focus:ring-primary outline-none transition-all text-sm font-bold text-foreground"
+                    />
+                </div>
+                <div className="w-full md:w-64">
+                    <span className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Categoria</span>
+                    <select
+                        value={categoryFilter}
+                        onChange={(e) => setCategoryFilter(e.target.value as any)}
+                        className="w-full p-3 bg-secondary text-foreground rounded-xl border border-input focus:ring-2 focus:ring-primary outline-none transition-all text-xs font-bold"
+                    >
+                        <option value="all" className="bg-secondary text-foreground">Todas as categorias</option>
+                        {CATEGORIES.map(c => (
+                            <option key={c} value={c} className="bg-secondary text-foreground">{c}</option>
+                        ))}
+                    </select>
                 </div>
             </div>
 
@@ -149,10 +214,10 @@ export function ManagementLayer() {
                         </thead>
                         <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
                             {activeTab === 'expenses' ? (
-                                data.expenses.length === 0 ? (
+                                filteredItems.length === 0 ? (
                                     <tr><td colSpan={7} className="px-6 py-12 text-center text-muted-foreground italic">Nenhum gasto registrado.</td></tr>
                                 ) : (
-                                    data.expenses.map(exp => (
+                                    (filteredItems as any[]).map(exp => (
                                         <tr key={exp.id} className={clsx("hover:bg-muted/50 transition-colors duration-150 group", selectedIds.includes(exp.id) && "bg-muted/30")}>
                                             <td className="px-6 py-4">
                                                 <input
@@ -234,10 +299,10 @@ export function ManagementLayer() {
                                     ))
                                 )
                             ) : activeTab === 'tasks' ? (
-                                data.tasks.length === 0 ? (
+                                filteredItems.length === 0 ? (
                                     <tr><td colSpan={7} className="px-6 py-12 text-center text-muted-foreground italic">Nenhuma tarefa registrada.</td></tr>
                                 ) : (
-                                    data.tasks.map(task => (
+                                    (filteredItems as any[]).map(task => (
                                         <tr key={task.id} className={clsx("hover:bg-muted/50 transition-colors duration-150 group", selectedIds.includes(task.id) && "bg-muted/30")}>
                                             <td className="px-6 py-4">
                                                 <input
@@ -294,10 +359,10 @@ export function ManagementLayer() {
                                     ))
                                 )
                             ) : (
-                                data.suppliers.length === 0 ? (
+                                filteredItems.length === 0 ? (
                                     <tr><td colSpan={7} className="px-6 py-12 text-center text-muted-foreground italic">Nenhum fornecedor cadastrado.</td></tr>
                                 ) : (
-                                    data.suppliers.map(sup => (
+                                    (filteredItems as any[]).map(sup => (
                                         <tr key={sup.id} className={clsx("hover:bg-muted/50 transition-colors duration-150 group", selectedIds.includes(sup.id) && "bg-muted/30")}>
                                             <td className="px-6 py-4">
                                                 <input

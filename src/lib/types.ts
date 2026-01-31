@@ -22,6 +22,7 @@ export const CATEGORIES: Category[] = [
     'Marmoraria',
     'Marcenaria',
     'Vidraçaria',
+    'Arquitetura',
     'Gesso / Drywall',
     'Pintura',
     'Elétrica / Hidráulica',
@@ -35,39 +36,6 @@ export const CATEGORIES: Category[] = [
     'Outros'
 ];
 
-export type Room =
-    | 'Área de Serviço'
-    | 'Banheiro'
-    | 'Cozinha'
-    | 'Entrada'
-    | 'Escritório'
-    | 'Escritório 2'
-    | 'Quarto 1'
-    | 'Quarto 2'
-    | 'Quarto Principal'
-    | 'Sala de Estar'
-    | 'Tudo'
-    | 'Varanda'
-    | 'Varanda Casal'
-    | 'Outros';
-
-export const ROOMS: Room[] = [
-    'Área de Serviço',
-    'Banheiro',
-    'Cozinha',
-    'Entrada',
-    'Escritório',
-    'Escritório 2',
-    'Quarto 1',
-    'Quarto 2',
-    'Quarto Principal',
-    'Sala de Estar',
-    'Tudo',
-    'Varanda',
-    'Varanda Casal',
-    'Outros'
-];
-
 export interface Project {
     name: string;
     totalBudget: number;
@@ -78,9 +46,7 @@ export interface Project {
 export interface Expense {
     id: string;
     name: string;
-    category: Category;
-    room?: Room;
-    amount: number;
+    category: Category;    amount: number;
     status: 'Paid' | 'Deposit' | 'Pending';
     date: string;
     dueDate: string; // Payment deadline
@@ -97,9 +63,7 @@ export interface Task {
     startDate: string;
     endDate: string;
     status: 'Pending' | 'In Progress' | 'Completed' | 'Blocked';
-    category: Category;
-    room?: Room;
-    supplierId?: string;
+    category: Category;    supplierId?: string;
     attachments?: string[];
 }
 
@@ -136,3 +100,4 @@ export interface ProjectData {
     suppliers: Supplier[];
     progressLog: ProgressEntry[];
 }
+

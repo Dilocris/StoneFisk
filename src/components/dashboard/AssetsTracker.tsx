@@ -10,7 +10,7 @@ export function AssetsTracker() {
     const { data, toggleAssetStatus, deleteAsset } = useProject();
 
     return (
-        <Card title="Já chegou na obra?" className="min-h-[200px] max-h-[600px] flex flex-col">
+        <Card title="Já chegou na obra?" className="h-[520px] flex flex-col">
             <div className="flex-1 space-y-3 overflow-y-auto custom-scrollbar pr-2">
                 {(!data.assets || data.assets.length === 0) ? (
                     <div className="py-12 text-center text-slate-400">
