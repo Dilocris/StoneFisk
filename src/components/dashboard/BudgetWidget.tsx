@@ -55,14 +55,14 @@ export function BudgetWidget() {
     }, [data.project.totalBudget, totalSpent, remaining, paidAmount, pendingAmount]);
 
     return (
-        <Card title="Status Financeiro" className="h-[520px] flex flex-col overflow-hidden bg-card text-card-foreground">
-            <div className="flex-1 flex flex-col lg:flex-row items-center lg:items-stretch justify-around gap-8 px-6 pt-6 pb-10">
+        <Card title="Status Financeiro" className="min-h-[520px] h-auto flex flex-col bg-card text-card-foreground overflow-hidden">
+            <div className="flex-1 flex flex-col lg:flex-row items-center lg:items-stretch justify-around gap-8 px-6 pt-6 pb-12">
 
                 {/* Visual Area - Vertical Thermometer */}
-                <div className="h-full py-8 flex items-center justify-center">
-                    <div className="relative w-28 h-full flex flex-col items-center">
+                <div className="min-h-[320px] lg:min-h-[400px] lg:h-full py-6 flex items-center justify-center self-stretch backdrop-blur-sm">
+                    <div className="relative w-40 h-[320px] lg:h-full min-h-[320px] lg:min-h-[400px] flex flex-col items-center">
                         {/* The "Thermometer" Bar */}
-                        <div className="w-16 h-full bg-muted rounded-full overflow-hidden flex flex-col-reverse border-4 border-border shadow-inner">
+                        <div className="w-24 h-full min-h-[320px] lg:min-h-[400px] bg-muted/50 rounded-full overflow-hidden flex flex-col-reverse border-4 border-border shadow-2xl shrink-0 backdrop-blur-md">
                             {/* Paid Segment */}
                             <div
                                 style={{ height: `${paidHeight}%` }}
@@ -79,7 +79,7 @@ export function BudgetWidget() {
                         </div>
 
                         {/* Floating Label - Centered on bar with translucency */}
-                        <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 flex flex-col items-center bg-card/80 backdrop-blur-md px-4 py-3 rounded-2xl shadow-2xl border border-border z-10 transition-transform duration-150 ease-out hover:scale-110">
+                        <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 flex flex-col items-center bg-card/95 backdrop-blur-xl px-5 py-4 rounded-3xl shadow-[0_0_30px_rgba(0,0,0,0.3)] border border-white/10 z-10 transition-transform duration-200 ease-out hover:scale-105 hover:shadow-[0_0_40px_rgba(0,0,0,0.4)]">
                             <span className="text-3xl font-black text-foreground leading-none tracking-tighter">{percentageUsed}%</span>
                             <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mt-1">
                                 {isOverBudget ? 'Acima do Orçamento' : 'Utilizado'}
@@ -89,7 +89,7 @@ export function BudgetWidget() {
                 </div>
 
                 {/* Stats Area */}
-                <div className="w-full lg:w-1/2 flex flex-col gap-4 h-full justify-between pb-8">
+                <div className="w-full lg:w-1/2 flex flex-col gap-4 h-full justify-between pb-10">
                     <div className="grid grid-cols-1 gap-3">
                         <div className="group p-4 rounded-2xl bg-card border border-border transition-transform duration-150 ease-out hover:scale-[1.01]">
                             <div className="flex justify-between items-center mb-1">

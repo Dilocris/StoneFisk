@@ -244,3 +244,12 @@ All agents MUST read this to understand context before starting work.
 - **Form Selects**: Ensured consistent dark mode styling for all dropdown options in `AddTaskForm`, `AddAssetForm`, and `AddSupplierForm`.
 
 **Reason:** Align the entire application with the "Monokai Dimmed" aesthetic and ensure first-class dark mode support while providing a more "premium" feel through typography and micro-interactions.
+
+## 2026-02-02: Financial Status Graph Expansion & Stability
+- **Action**: Restructured the `BudgetWidget` thermometer graph to prevent collapse and improve aesthetics.
+- **Details**:
+    - Replaced `h-[320px]` and `h-full` with explicit `min-h-[320px]` (mobile) and `lg:min-h-[400px]` (desktop) on the thermometer bar to prevent height collapse in the third-column layout.
+    - Increased the pill width from `w-16` to `w-24` and the container from `w-28` to `w-40` for a more "full" and premium look on high-resolution screens.
+    - Enhanced visuals with `backdrop-blur-md`, `shadow-2xl`, and optimized the floating percentage label with deeper shadows and hover scaling.
+- **Reason**: Fixed a layout bug where the graph rendered as a thin horizontal line on desktop due to flex-height collapse, while simultaneously fulfilling the user request for a more prominent "full pill" shape.
+
