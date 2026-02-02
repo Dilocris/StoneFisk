@@ -68,9 +68,19 @@ export function ProjectSettingsForm({ onSuccess }: ProjectSettingsFormProps) {
         }
     };
 
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
     const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
+
+        // Check file size before processing
+        if (file.size > MAX_FILE_SIZE) {
+            alert('Arquivo muito grande. O tamanho máximo permitido é 5MB.');
+            e.target.value = '';
+            return;
+        }
+
         setIsImporting(true);
         try {
             const text = await file.text();
@@ -97,6 +107,7 @@ export function ProjectSettingsForm({ onSuccess }: ProjectSettingsFormProps) {
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
+                    maxLength={100}
                     className="w-full p-3 bg-slate-50 rounded-xl border-none focus:ring-2 focus:ring-blue-500 outline-none transition-all font-bold text-slate-700"
                 />
             </div>
@@ -108,6 +119,7 @@ export function ProjectSettingsForm({ onSuccess }: ProjectSettingsFormProps) {
                     <input
                         required
                         type="number"
+                        min={0}
                         value={budget}
                         onChange={(e) => setBudget(e.target.value)}
                         className="w-full pl-10 pr-4 py-3 bg-slate-50 rounded-xl border-none focus:ring-2 focus:ring-blue-500 outline-none transition-all font-bold text-slate-700"

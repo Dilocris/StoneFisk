@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useProject } from '@/context/ProjectContext';
 import { Card } from '@/components/ui/Card';
 import { TrendingDown, TrendingUp, AlertCircle, CheckCircle2, Clock } from 'lucide-react';
@@ -10,28 +10,37 @@ export function HealthCheck() {
     const { data, getBudgetStats } = useProject();
     const { totalSpent, remaining } = getBudgetStats();
 
-    // Financial Health Calculation
-    const totalBudget = data.project.totalBudget;
-    const budgetUsage = totalBudget > 0 ? (totalSpent / totalBudget) * 100 : 0;
-    let financialStatus: 'good' | 'warning' | 'critical' = 'good';
-    if (budgetUsage > 95) financialStatus = 'critical';
-    else if (budgetUsage > 80) financialStatus = 'warning';
+    // Memoize financial health calculations
+    const { budgetUsage, financialStatus } = useMemo(() => {
+        const totalBudget = data.project.totalBudget;
+        const budgetUsage = totalBudget > 0 ? (totalSpent / totalBudget) * 100 : 0;
 
-    // Timeline Health Calculation
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+        let financialStatus: 'good' | 'warning' | 'critical' = 'good';
+        if (budgetUsage > 95) financialStatus = 'critical';
+        else if (budgetUsage > 80) financialStatus = 'warning';
 
-    const delayedTasks = data.tasks.filter(t => t.status !== 'Completed' && new Date(t.endDate) < today);
-    const totalDelayDays = delayedTasks.reduce((acc, t) => {
-        const endDate = new Date(t.endDate);
-        const diffTime = Math.abs(today.getTime() - endDate.getTime());
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        return acc + diffDays;
-    }, 0);
+        return { budgetUsage, financialStatus };
+    }, [data.project.totalBudget, totalSpent]);
 
-    let timelineStatus: 'good' | 'warning' | 'critical' = 'good';
-    if (totalDelayDays >= 15) timelineStatus = 'critical';
-    else if (totalDelayDays > 0) timelineStatus = 'warning';
+    // Memoize timeline health calculations (overdue tasks and delay calculations)
+    const { totalDelayDays, timelineStatus } = useMemo(() => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const delayedTasks = data.tasks.filter(t => t.status !== 'Completed' && new Date(t.endDate) < today);
+        const totalDelayDays = delayedTasks.reduce((acc, t) => {
+            const endDate = new Date(t.endDate);
+            const diffTime = Math.abs(today.getTime() - endDate.getTime());
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return acc + diffDays;
+        }, 0);
+
+        let timelineStatus: 'good' | 'warning' | 'critical' = 'good';
+        if (totalDelayDays >= 15) timelineStatus = 'critical';
+        else if (totalDelayDays > 0) timelineStatus = 'warning';
+
+        return { totalDelayDays, timelineStatus };
+    }, [data.tasks]);
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

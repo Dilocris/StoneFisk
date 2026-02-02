@@ -6,6 +6,8 @@ import { Category, Expense, CATEGORIES } from '@/lib/types';
 import { Check, Loader2, Paperclip, X, CreditCard, Calendar, Repeat, Plus, FileText } from 'lucide-react';
 import clsx from 'clsx';
 import { formatDateInput } from '@/lib/date';
+import { FormInput } from '@/components/ui/FormInput';
+import { FormSelect } from '@/components/ui/FormSelect';
 
 interface AddExpenseFormProps {
     onSuccess: () => void;
@@ -108,44 +110,46 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
             <div className="bg-card p-4 rounded-2xl mb-4 border border-border shadow-sm">
                 <label className="block text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3">Informações de Compra</label>
                 <div className="space-y-4">
-                    <input
+                    <FormInput
                         required
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         placeholder="Nome do produto ou serviço (ex: Piso Vinílico)"
-                        className="w-full p-3 bg-secondary rounded-xl border border-input focus:ring-2 focus:ring-primary outline-none transition-all text-sm font-bold text-foreground placeholder:text-muted-foreground"
+                        maxLength={100}
+                        className="text-sm font-bold text-foreground placeholder:text-muted-foreground"
                     />
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="relative">
-                            <input
+                            <FormInput
                                 type="number"
                                 step="0.01"
+                                min={0}
                                 required
                                 value={amount}
                                 onChange={(e) => setAmount(e.target.value)}
                                 placeholder="Valor Total (R$)"
-                                className="w-full p-3 pl-10 bg-secondary rounded-xl border border-input focus:ring-2 focus:ring-primary outline-none transition-all text-sm font-mono font-bold text-foreground placeholder:text-muted-foreground"
+                                className="pl-10 text-sm font-mono font-bold text-foreground placeholder:text-muted-foreground"
                             />
                             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-bold text-xs">R$</span>
                         </div>
-                        <select
+                        <FormSelect
                             value={category}
                             onChange={(e) => setCategory(e.target.value as Category)}
-                            className="w-full p-3 bg-secondary text-foreground rounded-xl border border-input focus:ring-2 focus:ring-primary outline-none transition-all text-xs font-bold"
+                            className="text-xs font-bold"
                         >
                             {CATEGORIES.map(c => <option key={c} value={c} className="bg-secondary text-foreground">{c}</option>)}
-                        </select>
+                        </FormSelect>
                     </div>
 
-                    <select
+                    <FormSelect
                         value={supplierId}
                         onChange={(e) => setSupplierId(e.target.value)}
-                        className="w-full p-3 bg-secondary text-foreground rounded-xl border border-input focus:ring-2 focus:ring-primary outline-none transition-all text-xs font-bold"
+                        className="text-xs font-bold"
                     >
                         <option value="" className="bg-secondary text-foreground">Selecione o Fornecedor (Opcional)</option>
                         {data.suppliers.map(s => <option key={s.id} value={s.id} className="bg-secondary text-foreground">{s.name}</option>)}
-                    </select>
+                    </FormSelect>
                 </div>
             </div>
 
@@ -154,29 +158,29 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
                     <label className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground uppercase mb-2">
                         <Calendar size={12} className="text-primary" /> Vencimento
                     </label>
-                    <input
+                    <FormInput
                         type="date"
                         required
                         value={dueDate}
                         onChange={(e) => setDueDate(e.target.value)}
-                        className="w-full bg-transparent border-none focus:ring-0 outline-none text-sm font-bold text-foreground custom-calendar-icon-white"
+                        className="!bg-transparent !border-none !focus:ring-0 !p-0 text-sm font-bold text-foreground custom-calendar-icon-white"
                     />
                 </div>
                 <div className="bg-card p-4 rounded-2xl border border-border">
                     <label className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground uppercase mb-2">
                         <CreditCard size={12} className="text-primary" /> Forma
                     </label>
-                    <select
+                    <FormSelect
                         value={paymentMethod}
                         onChange={(e) => setPaymentMethod(e.target.value)}
-                        className="w-full bg-transparent border-none focus:ring-0 outline-none text-sm font-bold text-foreground"
+                        className="!bg-transparent !border-none !focus:ring-0 !p-0 text-sm font-bold text-foreground"
                     >
                         <option value="PIX" className="bg-secondary text-foreground">PIX</option>
                         <option value="Boleto" className="bg-secondary text-foreground">Boleto</option>
                         <option value="Cartão de Crédito" className="bg-secondary text-foreground">Cartão de Crédito</option>
                         <option value="Transferência" className="bg-secondary text-foreground">Transferência</option>
                         <option value="Dinheiro" className="bg-secondary text-foreground">Dinheiro</option>
-                    </select>
+                    </FormSelect>
                 </div>
             </div>
 
@@ -199,13 +203,13 @@ export function AddExpenseForm({ onSuccess, initialData }: AddExpenseFormProps) 
                         <div className="flex items-center gap-4 animate-in slide-in-from-top-2">
                             <div className="flex-1">
                                 <span className="text-[10px] text-slate-500 font-bold block mb-1">Nº de Parcelas</span>
-                                <input
+                                <FormInput
                                     type="number"
-                                    min="2"
-                                    max="48"
+                                    min={1}
+                                    max={60}
                                     value={installmentCount}
                                     onChange={(e) => setInstallmentCount(e.target.value)}
-                                    className="w-full p-2 bg-card rounded-xl border-none text-sm font-bold text-foreground"
+                                    className="!p-2 !bg-card !border-none text-sm font-bold text-foreground"
                                 />
                             </div>
                             <div className="flex-1">

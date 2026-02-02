@@ -2,13 +2,15 @@
 
 import React, { useState } from 'react';
 import { useProject } from '@/context/ProjectContext';
-import { Category, CATEGORIES } from '@/lib/types';
+import { useModal } from '@/context/ModalContext';
+import { Category, CATEGORIES, Expense, Task, Supplier } from '@/lib/types';
 import { Card } from '@/components/ui/Card';
 import { Trash2, Edit3, Plus, CreditCard, Phone, Mail, Globe, User, Image as ImageIcon } from 'lucide-react';
 import clsx from 'clsx';
 
 export function ManagementLayer() {
-    const { data, updateExpense, deleteExpense, updateTask, deleteTask, deleteSupplier } = useProject();
+    const { data, supplierMap, updateExpense, deleteExpense, updateTask, deleteTask, deleteSupplier } = useProject();
+    const { openModal } = useModal();
     const [activeTab, setActiveTab] = useState<'expenses' | 'tasks' | 'suppliers'>('expenses');
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -31,7 +33,7 @@ export function ManagementLayer() {
         const items = getCurrentItems();
         const term = searchTerm.trim().toLowerCase();
 
-        return items.filter((item: any) => {
+        return items.filter((item: Expense | Task | Supplier) => {
             if (categoryFilter !== 'all') {
                 if ('category' in item && item.category !== categoryFilter) return false;
             }
@@ -113,10 +115,9 @@ export function ManagementLayer() {
                         ) : (
                             <button
                                 onClick={() => {
-                                    const event = activeTab === 'expenses' ? 'open-expense-modal' :
-                                        activeTab === 'tasks' ? 'open-task-modal' :
-                                            'open-supplier-modal';
-                                    window.dispatchEvent(new CustomEvent(event));
+                                    const type = activeTab === 'expenses' ? 'expense' :
+                                        activeTab === 'tasks' ? 'task' : 'supplier';
+                                    openModal(type);
                                 }}
                                 className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 shadow-lg shadow-blue-500/20 transition-all duration-150 ease-out font-outfit"
                             >
@@ -217,7 +218,7 @@ export function ManagementLayer() {
                                 filteredItems.length === 0 ? (
                                     <tr><td colSpan={7} className="px-6 py-12 text-center text-muted-foreground italic">Nenhum gasto registrado.</td></tr>
                                 ) : (
-                                    (filteredItems as any[]).map(exp => (
+                                    (filteredItems as Expense[]).map(exp => (
                                         <tr key={exp.id} className={clsx("hover:bg-muted/50 transition-colors duration-150 group", selectedIds.includes(exp.id) && "bg-muted/30")}>
                                             <td className="px-6 py-4">
                                                 <input
@@ -238,7 +239,7 @@ export function ManagementLayer() {
                                                 </div>
                                                 {exp.supplierId && (
                                                     <div className="text-[9px] text-blue-500 font-bold flex items-center gap-1 mt-0.5">
-                                                        <User size={10} /> {data.suppliers.find(s => s.id === exp.supplierId)?.name || 'Fornecedor Desconhecido'}
+                                                        <User size={10} /> {supplierMap.get(exp.supplierId)?.name || 'Fornecedor Desconhecido'}
                                                     </div>
                                                 )}
                                                 {exp.paymentMethod && (
@@ -302,7 +303,7 @@ export function ManagementLayer() {
                                 filteredItems.length === 0 ? (
                                     <tr><td colSpan={7} className="px-6 py-12 text-center text-muted-foreground italic">Nenhuma tarefa registrada.</td></tr>
                                 ) : (
-                                    (filteredItems as any[]).map(task => (
+                                    (filteredItems as Task[]).map(task => (
                                         <tr key={task.id} className={clsx("hover:bg-muted/50 transition-colors duration-150 group", selectedIds.includes(task.id) && "bg-muted/30")}>
                                             <td className="px-6 py-4">
                                                 <input
@@ -362,7 +363,7 @@ export function ManagementLayer() {
                                 filteredItems.length === 0 ? (
                                     <tr><td colSpan={7} className="px-6 py-12 text-center text-muted-foreground italic">Nenhum fornecedor cadastrado.</td></tr>
                                 ) : (
-                                    (filteredItems as any[]).map(sup => (
+                                    (filteredItems as Supplier[]).map(sup => (
                                         <tr key={sup.id} className={clsx("hover:bg-muted/50 transition-colors duration-150 group", selectedIds.includes(sup.id) && "bg-muted/30")}>
                                             <td className="px-6 py-4">
                                                 <input

@@ -1,12 +1,11 @@
-import jsPDF from 'jspdf';
-
-import autoTable from 'jspdf-autotable';
-
 import { ProjectData } from './types';
 import { formatDateInput } from './date';
 
 
-export const generatePDFReport = (data: ProjectData) => {
+export const generatePDFReport = async (data: ProjectData): Promise<void> => {
+    // Lazy-load PDF libraries to reduce initial bundle size
+    const { jsPDF } = await import('jspdf');
+    const autoTable = (await import('jspdf-autotable')).default;
 
     const doc = new jsPDF();
 
