@@ -13,13 +13,13 @@ export function Card({ children, className, title, action, ...props }: CardProps
     return (
         <div
             className={twMerge(
-                clsx("bg-white/70 backdrop-blur-md border border-slate-200 shadow-sm rounded-xl p-6 dark:bg-slate-800/70 dark:border-slate-700", className)
+                clsx("bg-card backdrop-blur-md border border-border shadow-sm rounded-xl p-6 transition-all duration-200", className)
             )}
             {...props}
         >
             {(title || action) && (
                 <div className="flex justify-between items-center mb-4">
-                    {title && <h3 className="text-slate-500 font-semibold uppercase tracking-wider text-sm dark:text-slate-400">{title}</h3>}
+                    {title && <h3 className="text-muted-foreground font-black uppercase tracking-widest text-[10px]">{title}</h3>}
                     {action && <div>{action}</div>}
                 </div>
             )}

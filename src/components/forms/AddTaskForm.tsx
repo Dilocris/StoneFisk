@@ -50,7 +50,7 @@ export function AddTaskForm({ onSuccess, initialData }: AddTaskFormProps) {
 
         if (endDate < startDate) {
 
-            setDateError('A data final deve ser igual ou posterior Ã  data de inÃ­cio.');
+            setDateError('A data final deve ser igual ou posterior à data de início.');
 
             setIsLoading(false);
 

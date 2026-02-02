@@ -4,6 +4,7 @@ import React from 'react';
 import { Card } from '@/components/ui/Card';
 import { useProject } from '@/context/ProjectContext';
 import { Calendar, CheckCircle2 } from 'lucide-react';
+import clsx from 'clsx';
 
 export function TimelineWidget() {
     const { data } = useProject();
@@ -12,27 +13,32 @@ export function TimelineWidget() {
     const upcomingTasks = data.tasks
         .filter(t => t.status === 'Pending' || t.status === 'In Progress')
         .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime())
-        .slice(0, 3); // Show top 3
+        .slice(0, 5); // Show top 5 for better filling
 
     return (
-        <Card title="Cronograma Ativo" className="h-full">
+        <Card title="Próximos Passos" className="h-full flex flex-col">
             {upcomingTasks.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-40 text-slate-400">
-                    <CheckCircle2 size={40} className="mb-2 opacity-50" />
-                    <p>Tudo em dia!</p>
+                <div className="flex-1 flex flex-col items-center justify-center py-12 text-muted-foreground/30">
+                    <CheckCircle2 size={48} className="mb-3 opacity-20" />
+                    <p className="text-sm italic uppercase font-black tracking-widest text-[10px]">Tudo em dia!</p>
                 </div>
             ) : (
-                <ul className="space-y-4">
+                <ul className="flex-1 space-y-4 overflow-y-auto custom-scrollbar pr-1">
                     {upcomingTasks.map(task => (
-                        <li key={task.id} className="flex items-start gap-3 pb-3 border-b border-slate-100 last:border-0 dark:border-slate-700">
-                            <div className="mt-1 bg-blue-100 text-blue-600 p-1.5 rounded-md dark:bg-blue-900/30 dark:text-blue-400">
-                                <Calendar size={16} />
+                        <li key={task.id} className="flex items-start gap-4 p-3 rounded-2xl bg-muted/30 border border-transparent hover:border-border hover:bg-muted/50 transition-all duration-200 group">
+                            <div className={clsx(
+                                "mt-0.5 p-2 rounded-xl transition-all duration-200 shadow-sm",
+                                task.status === 'In Progress' ? "bg-warning/20 text-warning" : "bg-primary/20 text-primary"
+                            )}>
+                                <Calendar size={18} />
                             </div>
-                            <div className="flex-1">
-                                <h4 className="font-medium text-sm text-slate-800 dark:text-slate-200">{task.title}</h4>
-                                <div className="flex justify-between mt-1">
-                                    <span className="text-xs text-slate-500">{task.category}</span>
-                                    <span className="text-xs font-mono text-slate-400">{new Date(task.startDate).toLocaleDateString('pt-BR')}</span>
+                            <div className="flex-1 min-w-0">
+                                <h4 className="font-black text-sm text-foreground tracking-tight truncate group-hover:text-primary transition-colors">{task.title}</h4>
+                                <div className="flex justify-between items-center mt-1">
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">{task.category}</span>
+                                    <span className="text-[10px] font-black font-mono text-muted-foreground/60 tracking-tighter">
+                                        {new Date(task.startDate).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}
+                                    </span>
                                 </div>
                             </div>
                         </li>

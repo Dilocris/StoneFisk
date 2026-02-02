@@ -46,37 +46,37 @@ export function HealthCheck() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Financial Health Card */}
             <Card className={clsx(
-                "relative overflow-hidden transition-all duration-200 ease-out border-l-4",
-                financialStatus === 'good' && "border-l-success bg-success/10",
-                financialStatus === 'warning' && "border-l-warning bg-warning/10",
-                financialStatus === 'critical' && "border-l-danger bg-danger/10"
+                "relative overflow-hidden transition-all duration-300 ease-out border-l-4",
+                financialStatus === 'good' && "border-l-success bg-success/5",
+                financialStatus === 'warning' && "border-l-warning bg-warning/5",
+                financialStatus === 'critical' && "border-l-danger bg-danger/5"
             )}>
                 <div className="flex justify-between items-start">
                     <div>
-                        <p className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">
                             Saúde Financeira
                         </p>
-                        <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100">
+                        <h3 className="text-xl font-black text-foreground tracking-tight">
                             {financialStatus === 'good' ? 'Tudo sob controle' : financialStatus === 'warning' ? 'Atenção ao teto' : 'Orçamento Estourado'}
                         </h3>
                     </div>
                     <div className={clsx(
-                        "p-2 rounded-full",
-                        financialStatus === 'good' && "bg-success/20 text-success",
-                        financialStatus === 'warning' && "bg-warning/20 text-warning",
-                        financialStatus === 'critical' && "bg-danger/20 text-danger"
+                        "p-2 rounded-xl shadow-lg transition-transform duration-300",
+                        financialStatus === 'good' && "bg-success/20 text-success shadow-success/10",
+                        financialStatus === 'warning' && "bg-warning/20 text-warning shadow-warning/10",
+                        financialStatus === 'critical' && "bg-danger/20 text-danger shadow-danger/10"
                     )}>
-                        {financialStatus === 'good' ? <TrendingDown size={24} /> : <TrendingUp size={24} />}
+                        {financialStatus === 'good' ? <TrendingDown size={20} /> : <TrendingUp size={20} />}
                     </div>
                 </div>
-                <div className="mt-4 flex items-center justify-between text-sm">
-                    <span className="text-slate-500">{budgetUsage.toFixed(0)}% do total utilizado</span>
-                    <span className="font-bold">Restam R$ {remaining.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                <div className="mt-4 flex items-center justify-between text-[11px] font-bold">
+                    <span className="text-muted-foreground uppercase tracking-widest">{budgetUsage.toFixed(0)}% Utilizado</span>
+                    <span className="text-foreground">Restam R$ {remaining.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 </div>
-                <div className="mt-3 h-2 w-full bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                <div className="mt-3 h-1.5 w-full bg-muted rounded-full overflow-hidden">
                     <div
                         className={clsx(
-                            "h-full transition-[width] duration-400 ease-out",
+                            "h-full transition-[width] duration-700 ease-out",
                             financialStatus === 'good' ? "bg-success" : financialStatus === 'warning' ? "bg-warning" : "bg-danger"
                         )}
                         style={{ width: `${Math.min(budgetUsage, 100)}%` }}
@@ -86,34 +86,34 @@ export function HealthCheck() {
 
             {/* Timeline Health Card */}
             <Card className={clsx(
-                "relative overflow-hidden transition-all duration-200 ease-out border-l-4",
-                timelineStatus === 'good' && "border-l-info bg-info/10",
-                timelineStatus === 'warning' && "border-l-warning bg-warning/10",
-                timelineStatus === 'critical' && "border-l-danger bg-danger/10"
+                "relative overflow-hidden transition-all duration-300 ease-out border-l-4",
+                timelineStatus === 'good' && "border-l-info bg-info/5",
+                timelineStatus === 'warning' && "border-l-warning bg-warning/5",
+                timelineStatus === 'critical' && "border-l-danger bg-danger/5"
             )}>
                 <div className="flex justify-between items-start">
                     <div>
-                        <p className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">
                             Ritmo da Obra
                         </p>
-                        <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100">
+                        <h3 className="text-xl font-black text-foreground tracking-tight">
                             {timelineStatus === 'good' ? 'Cronograma em Dia' : timelineStatus === 'warning' ? 'Ajustes Necessários' : 'Obra Travada'}
                         </h3>
                     </div>
                     <div className={clsx(
-                        "p-2 rounded-full",
-                        timelineStatus === 'good' && "bg-info/20 text-info",
-                        timelineStatus === 'warning' && "bg-warning/20 text-warning",
-                        timelineStatus === 'critical' && "bg-danger/20 text-danger"
+                        "p-2 rounded-xl shadow-lg transition-transform duration-300",
+                        timelineStatus === 'good' && "bg-info/20 text-info shadow-info/10",
+                        timelineStatus === 'warning' && "bg-warning/20 text-warning shadow-warning/10",
+                        timelineStatus === 'critical' && "bg-danger/20 text-danger shadow-danger/10"
                     )}>
-                        {timelineStatus === 'good' ? <CheckCircle2 size={24} /> : timelineStatus === 'warning' ? <Clock size={24} /> : <AlertCircle size={24} />}
+                        {timelineStatus === 'good' ? <CheckCircle2 size={20} /> : timelineStatus === 'warning' ? <Clock size={20} /> : <AlertCircle size={20} />}
                     </div>
                 </div>
-                <div className="mt-4 flex items-center justify-between text-sm">
-                    <span className="text-slate-500">{totalDelayDays} dias de atraso acumulado</span>
+                <div className="mt-4 flex items-center justify-between text-[11px] font-bold">
+                    <span className="text-muted-foreground uppercase tracking-widest">{totalDelayDays} dias de atraso</span>
                     <button
                         onClick={() => document.getElementById('gantt-section')?.scrollIntoView({ behavior: 'smooth' })}
-                        className="text-blue-600 font-semibold hover:underline transition-colors duration-150 hover:text-blue-700"
+                        className="text-primary hover:underline transition-all active:scale-95"
                     >
                         Ver Detalhes
                     </button>
@@ -123,8 +123,8 @@ export function HealthCheck() {
                         <div
                             key={i}
                             className={clsx(
-                                "h-1 flex-1 rounded-full",
-                                i <= (5 - Math.min(Math.ceil(totalDelayDays / 3), 5)) ? "bg-info" : "bg-secondary"
+                                "h-1.5 flex-1 rounded-full",
+                                i <= (5 - Math.min(Math.ceil(totalDelayDays / 3), 5)) ? "bg-info" : "bg-muted"
                             )}
                         />
                     ))}

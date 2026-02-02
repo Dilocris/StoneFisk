@@ -347,7 +347,7 @@ export function GanttWorkspace() {
                                                     <div className="bg-slate-900 dark:bg-slate-800 text-white p-3 rounded-xl shadow-2xl whitespace-nowrap border border-white/10">
                                                         <span className="text-sm font-bold block mb-1">{task.title}</span>
                                                         <div className="flex gap-4 text-[10px] opacity-70">
-                                                            <span>📅 {new Date(task.startDate).toLocaleDateString()} - {new Date(task.endDate).toLocaleDateString()}</span>
+                                                            <span>📅 {new Date(task.startDate).toLocaleDateString('pt-BR')} - {new Date(task.endDate).toLocaleDateString('pt-BR')}</span>
                                                             <span className="font-black uppercase">
                                                                 {task.status === 'Pending' ? 'Pendente' :
                                                                     task.status === 'In Progress' ? 'Em Curso' :

@@ -229,3 +229,18 @@ All agents MUST read this to understand context before starting work.
   - **Modal Fix**: Enforced `max-h-[90vh]` and internal scrolling for all modals, preventing overflow on smaller screens (critical for Add Expense form).
   - **Dropdowns**: Applied explicit `bg-secondary text-foreground` to `<option>` elements across all forms (Expense, Task, Asset, Supplier) to prevent "white text on white background" browser defaults in some dark mode contexts.
 - **Reason**: Ensure a premium, glitch-free visual experience that matches the "Monokai Dimmed" aesthetic.
+
+## 2026-01-30: Comprehensive UI/UX Polish & Harmonization
+
+**Action:** Continued the visual refinement pass across the entire dashboard.
+
+**Details:**
+- **Card Component**: Standardized `bg-card` and `border-border` usage, improved typography for consistent tracking.
+- **HealthCheck Widget**: Fully themed with alpha-blended status colors and premium typography.
+- **Management Layer**: Fixed dark mode visibility for dropdowns (status select). Standardized tab styling with interactive hover/active states.
+- **Assets Tracker**: Polished list items with better typography, status indicators, and hover effects.
+- **Progress Log**: Redesigned the "Daily Journal" to feel more like a premium timeline with smoother interactions.
+- **Timeline Widget**: Harmonized with semantic variables and improved task list aesthetics.
+- **Form Selects**: Ensured consistent dark mode styling for all dropdown options in `AddTaskForm`, `AddAssetForm`, and `AddSupplierForm`.
+
+**Reason:** Align the entire application with the "Monokai Dimmed" aesthetic and ensure first-class dark mode support while providing a more "premium" feel through typography and micro-interactions.

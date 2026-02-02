@@ -56,7 +56,7 @@ export function BudgetWidget() {
 
     return (
         <Card title="Status Financeiro" className="h-[520px] flex flex-col overflow-hidden bg-card text-card-foreground">
-            <div className="flex-1 flex flex-col lg:flex-row items-center justify-around gap-8 px-6 py-4 pb-6">
+            <div className="flex-1 flex flex-col lg:flex-row items-center lg:items-stretch justify-around gap-8 px-6 pt-6 pb-10">
 
                 {/* Visual Area - Vertical Thermometer */}
                 <div className="h-full py-8 flex items-center justify-center">
@@ -82,14 +82,14 @@ export function BudgetWidget() {
                         <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 flex flex-col items-center bg-card/80 backdrop-blur-md px-4 py-3 rounded-2xl shadow-2xl border border-border z-10 transition-transform duration-150 ease-out hover:scale-110">
                             <span className="text-3xl font-black text-foreground leading-none tracking-tighter">{percentageUsed}%</span>
                             <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mt-1">
-                                {isOverBudget ? 'Acima do OrÃ§amento' : 'Utilizado'}
+                                {isOverBudget ? 'Acima do Orçamento' : 'Utilizado'}
                             </span>
                         </div>
                     </div>
                 </div>
 
                 {/* Stats Area */}
-                <div className="w-full lg:w-1/2 flex flex-col gap-4">
+                <div className="w-full lg:w-1/2 flex flex-col gap-4 h-full justify-between pb-8">
                     <div className="grid grid-cols-1 gap-3">
                         <div className="group p-4 rounded-2xl bg-card border border-border transition-transform duration-150 ease-out hover:scale-[1.01]">
                             <div className="flex justify-between items-center mb-1">
@@ -116,7 +116,7 @@ export function BudgetWidget() {
                         </div>
                     </div>
 
-                    <div className="mt-2 pt-4 border-t border-border">
+                    <div className="mt-auto pt-5 pb-2 border-t border-border">
                         <span className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Orçamento Total</span>
                         <span className="text-2xl font-black text-foreground">R$ {data.project.totalBudget.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                     </div>
