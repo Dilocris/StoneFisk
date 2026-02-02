@@ -3,6 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { ProjectData } from '@/lib/types';
 import { formatDateInput } from '@/lib/date';
+import { isValidProjectData } from '@/lib/validation';
 
 const DB_PATH = path.join(process.cwd(), 'data', 'db.json');
 
@@ -26,25 +27,6 @@ async function ensureDb() {
         await fs.mkdir(path.dirname(DB_PATH), { recursive: true });
         await fs.writeFile(DB_PATH, JSON.stringify(initialData, null, 2));
     }
-}
-
-function isValidProjectData(body: any): body is ProjectData {
-    if (!body || typeof body !== 'object') return false;
-    const requiredKeys: (keyof ProjectData)[] = ['project', 'expenses', 'tasks', 'assets', 'suppliers', 'progressLog'];
-
-    // Check for missing keys
-    if (!requiredKeys.every(key => key in body)) return false;
-
-    // Check 'project' object specifically
-    if (typeof body.project !== 'object' || !body.project.name || typeof body.project.totalBudget !== 'number') {
-        return false;
-    }
-
-    // Ensure all collections are arrays
-    const collections: (keyof ProjectData)[] = ['expenses', 'tasks', 'assets', 'suppliers', 'progressLog'];
-    if (!collections.every(key => Array.isArray(body[key]))) return false;
-
-    return true;
 }
 
 export async function GET() {

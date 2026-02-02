@@ -1,8 +1,9 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
 import { ProjectData, Expense, Task, Project, Asset, Supplier } from '@/lib/types';
 import { formatDateInput } from '@/lib/date';
+import { isValidProjectData } from '@/lib/validation';
 
 // Initial empty state (will be populated from API)
 const DEFAULT_DATA: ProjectData = {
@@ -21,6 +22,13 @@ const DEFAULT_DATA: ProjectData = {
 interface ProjectContextType {
     data: ProjectData;
     isLoading: boolean;
+    error: string | null;
+    clearError: () => void;
+    // Memoized lookup maps for O(1) access
+    supplierMap: Map<string, Supplier>;
+    expenseMap: Map<string, Expense>;
+    expenseByOrderIdMap: Map<string, Expense>;
+    taskMap: Map<string, Task>;
     addExpense: (expense: Omit<Expense, 'id'>, installments?: number) => void;
     addTask: (task: Omit<Task, 'id'>) => void;
     updateProject: (project: Partial<Project>) => void;
@@ -47,23 +55,14 @@ interface ProjectContextType {
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
 
-function isValidProjectData(body: any): body is ProjectData {
-    if (!body || typeof body !== 'object') return false;
-    const requiredKeys: (keyof ProjectData)[] = ['project', 'expenses', 'tasks', 'assets', 'suppliers', 'progressLog'];
-    if (!requiredKeys.every(key => key in body)) return false;
-    if (typeof body.project !== 'object' || typeof body.project.name !== 'string' || typeof body.project.totalBudget !== 'number') {
-        return false;
-    }
-    const collections: (keyof ProjectData)[] = ['expenses', 'tasks', 'assets', 'suppliers', 'progressLog'];
-    if (!collections.every(key => Array.isArray(body[key]))) return false;
-    return true;
-}
-
 export function ProjectProvider({ children }: { children: React.ReactNode }) {
     const [data, setData] = useState<ProjectData>(DEFAULT_DATA);
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const saveTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
     const isFirstLoad = React.useRef(true);
+
+    const clearError = useCallback(() => setError(null), []);
 
     // 2. Load Data from API
     const loadData = useCallback(async () => {
@@ -80,6 +79,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
             }
         } catch (e) {
             console.error("Failed to load data", e);
+            setError("Failed to load project data. Please refresh the page.");
         } finally {
             setIsLoading(false);
             // We set isFirstLoad to false AFTER the first state update is complete
@@ -109,6 +109,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
                 });
             } catch (e) {
                 console.error("Failed to save data", e);
+                setError("Failed to save changes. Your data may not be persisted.");
             }
         }, 800);
 
@@ -119,13 +120,17 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
 
     const deleteFile = async (url: string) => {
         try {
-            await fetch('/api/upload', {
+            const res = await fetch('/api/upload', {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ url })
             });
+            if (!res.ok) {
+                setError("Failed to delete file. Please try again.");
+            }
         } catch (e) {
             console.error("Delete upload failed", e);
+            setError("Failed to delete file. Please try again.");
         }
     };
 
@@ -358,10 +363,37 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
         return { totalSpent, remaining };
     };
 
+    // Memoized lookup maps for O(1) access - fixes N+1 query pattern
+    const supplierMap = useMemo(() =>
+        new Map(data.suppliers.map(s => [s.id, s])),
+        [data.suppliers]
+    );
+
+    const expenseMap = useMemo(() =>
+        new Map(data.expenses.map(e => [e.id, e])),
+        [data.expenses]
+    );
+
+    const expenseByOrderIdMap = useMemo(() =>
+        new Map(data.expenses.map(e => [e.orderId, e])),
+        [data.expenses]
+    );
+
+    const taskMap = useMemo(() =>
+        new Map(data.tasks.map(t => [t.id, t])),
+        [data.tasks]
+    );
+
     return (
         <ProjectContext.Provider value={{
             data,
             isLoading,
+            error,
+            clearError,
+            supplierMap,
+            expenseMap,
+            expenseByOrderIdMap,
+            taskMap,
             addExpense,
             addTask,
             updateProject,

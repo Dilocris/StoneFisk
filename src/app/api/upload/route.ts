@@ -78,8 +78,8 @@ export async function DELETE(request: Request) {
 
         try {
             await fs.unlink(resolvedPath);
-        } catch (error: any) {
-            if (error?.code !== 'ENOENT') {
+        } catch (error: unknown) {
+            if (error instanceof Error && 'code' in error && error.code !== 'ENOENT') {
                 throw error;
             }
         }

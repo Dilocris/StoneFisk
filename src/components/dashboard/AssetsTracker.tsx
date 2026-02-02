@@ -7,7 +7,7 @@ import { Package, Truck, CheckCircle2, Trash2, Plus, User, Edit3, Image as Image
 import clsx from 'clsx';
 
 export function AssetsTracker() {
-    const { data, toggleAssetStatus, deleteAsset } = useProject();
+    const { data, supplierMap, expenseMap, expenseByOrderIdMap, toggleAssetStatus, deleteAsset } = useProject();
 
     return (
         <Card title="Já chegou na obra?" className="h-[520px] flex flex-col">
@@ -51,12 +51,12 @@ export function AssetsTracker() {
                                         </span>
                                         {asset.supplierId && (
                                             <div className="text-[9px] text-blue-500 font-bold flex items-center gap-1">
-                                                <User size={10} /> {data.suppliers.find(s => s.id === asset.supplierId)?.name || 'Fornecedor Desconhecido'}
+                                                <User size={10} /> {supplierMap.get(asset.supplierId)?.name || 'Fornecedor Desconhecido'}
                                             </div>
                                         )}
                                         {/* Check for linked expense attachments */}
                                         {(() => {
-                                            const linkedExpense = data.expenses.find(e => e.orderId === asset.id || e.id === asset.id);
+                                            const linkedExpense = expenseByOrderIdMap.get(asset.id) || expenseMap.get(asset.id);
                                             if (linkedExpense?.attachments?.length) {
                                                 return (
                                                     <div className="text-[9px] text-purple-500 font-bold flex items-center gap-1 mt-0.5">
@@ -72,7 +72,7 @@ export function AssetsTracker() {
                             <div className="flex items-center gap-1">
                                 <button
                                     onClick={() => {
-                                        const linkedExpense = data.expenses.find(e => e.orderId === asset.id || e.id === asset.id);
+                                        const linkedExpense = expenseByOrderIdMap.get(asset.id) || expenseMap.get(asset.id);
                                         if (linkedExpense) {
                                             window.dispatchEvent(new CustomEvent('edit-expense', { detail: linkedExpense }));
                                         } else {

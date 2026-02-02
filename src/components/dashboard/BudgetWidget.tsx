@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Card } from '@/components/ui/Card';
 import { useProject } from '@/context/ProjectContext';
 
@@ -8,25 +8,51 @@ export function BudgetWidget() {
     const { data, getBudgetStats } = useProject();
     const { totalSpent, remaining } = getBudgetStats();
 
-    const paidAmount = data.expenses
-        .filter(e => e.status === 'Paid')
-        .reduce((sum, e) => sum + e.amount, 0);
+    // Memoize expense calculations to avoid recalculating on every render
+    const { paidAmount, pendingAmount } = useMemo(() => {
+        const paid = data.expenses
+            .filter(e => e.status === 'Paid')
+            .reduce((sum, e) => sum + e.amount, 0);
 
-    const pendingAmount = data.expenses
-        .filter(e => e.status !== 'Paid')
-        .reduce((sum, e) => sum + e.amount, 0);
+        const pending = data.expenses
+            .filter(e => e.status !== 'Paid')
+            .reduce((sum, e) => sum + e.amount, 0);
 
-    const totalBudget = data.project.totalBudget;
-    const hasBudget = totalBudget > 0;
-    const percentageUsed = hasBudget ? Math.round((totalSpent / totalBudget) * 100) : 0;
-    const isOverBudget = hasBudget && totalSpent > totalBudget;
+        return { paidAmount: paid, pendingAmount: pending };
+    }, [data.expenses]);
 
-    // Bar heights in percentage
-    const spentTotal = paidAmount + pendingAmount;
-    const usedPercent = hasBudget ? Math.min(100, (spentTotal / totalBudget) * 100) : 0;
-    const paidHeight = spentTotal > 0 ? (paidAmount / spentTotal) * usedPercent : 0;
-    const pendingHeight = spentTotal > 0 ? (pendingAmount / spentTotal) * usedPercent : 0;
-    const availableHeight = hasBudget ? Math.max(0, (remaining / totalBudget) * 100) : 0;
+    // Memoize derived budget calculations
+    const {
+        totalBudget,
+        hasBudget,
+        percentageUsed,
+        isOverBudget,
+        paidHeight,
+        pendingHeight,
+        availableHeight
+    } = useMemo(() => {
+        const totalBudget = data.project.totalBudget;
+        const hasBudget = totalBudget > 0;
+        const percentageUsed = hasBudget ? Math.round((totalSpent / totalBudget) * 100) : 0;
+        const isOverBudget = hasBudget && totalSpent > totalBudget;
+
+        // Bar heights in percentage
+        const spentTotal = paidAmount + pendingAmount;
+        const usedPercent = hasBudget ? Math.min(100, (spentTotal / totalBudget) * 100) : 0;
+        const paidHeight = spentTotal > 0 ? (paidAmount / spentTotal) * usedPercent : 0;
+        const pendingHeight = spentTotal > 0 ? (pendingAmount / spentTotal) * usedPercent : 0;
+        const availableHeight = hasBudget ? Math.max(0, (remaining / totalBudget) * 100) : 0;
+
+        return {
+            totalBudget,
+            hasBudget,
+            percentageUsed,
+            isOverBudget,
+            paidHeight,
+            pendingHeight,
+            availableHeight
+        };
+    }, [data.project.totalBudget, totalSpent, remaining, paidAmount, pendingAmount]);
 
     return (
         <Card title="Status Financeiro" className="h-[520px] flex flex-col overflow-hidden bg-card text-card-foreground">

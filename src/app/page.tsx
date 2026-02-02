@@ -1,7 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useProject } from '@/context/ProjectContext';
+import { useModal } from '@/context/ModalContext';
+import { Expense, Task, Supplier, Asset } from '@/lib/types';
 import { HealthCheck } from '@/components/dashboard/HealthCheck';
 import { AssetsTracker } from '@/components/dashboard/AssetsTracker';
 import { ProgressLog } from '@/components/dashboard/ProgressLog';
@@ -19,55 +21,41 @@ import { generatePDFReport } from '@/lib/export';
 
 export default function Home() {
   const { data } = useProject();
+  const { modal, openModal, closeModal } = useModal();
 
-  // Modal states
-  const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
-  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
-  const [isAssetModalOpen, setIsAssetModalOpen] = useState(false);
-  const [isSupplierModalOpen, setIsSupplierModalOpen] = useState(false);
-  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const getModalTitle = () => {
+    switch (modal.type) {
+      case 'expense':
+        return modal.data ? "Editar Lançamento" : "Novo Lançamento Financeiro";
+      case 'task':
+        return modal.data ? "Editar Tarefa" : "Agendar Nova Tarefa";
+      case 'asset':
+        return modal.data ? "Editar Item" : "Rastrear Item";
+      case 'supplier':
+        return modal.data ? "Editar Fornecedor" : "Cadastrar Novo Fornecedor";
+      case 'settings':
+        return "Configurações do Projeto";
+      default:
+        return "";
+    }
+  };
 
-  // Edit states
-  const [editingExpense, setEditingExpense] = useState<any>(null);
-  const [editingTask, setEditingTask] = useState<any>(null);
-  const [editingSupplier, setEditingSupplier] = useState<any>(null);
-  const [editingAsset, setEditingAsset] = useState<any>(null);
-
-  // Event Listeners
-  React.useEffect(() => {
-    const openExp = () => { setEditingExpense(null); setIsExpenseModalOpen(true); };
-    const openTask = () => { setEditingTask(null); setIsTaskModalOpen(true); };
-    const openAsset = () => { setEditingAsset(null); setIsAssetModalOpen(true); };
-    const openSupplier = () => { setEditingSupplier(null); setIsSupplierModalOpen(true); };
-    const openSettings = () => setIsSettingsModalOpen(true);
-
-    const editExp = (e: any) => { setEditingExpense(e.detail); setIsExpenseModalOpen(true); };
-    const editTask = (e: any) => { setEditingTask(e.detail); setIsTaskModalOpen(true); };
-    const editSup = (e: any) => { setEditingSupplier(e.detail); setIsSupplierModalOpen(true); };
-    const editAsset = (e: any) => { setEditingAsset(e.detail); setIsAssetModalOpen(true); };
-
-    window.addEventListener('open-expense-modal', openExp);
-    window.addEventListener('open-task-modal', openTask);
-    window.addEventListener('open-asset-modal', openAsset);
-    window.addEventListener('open-supplier-modal', openSupplier);
-    window.addEventListener('open-settings-modal', openSettings);
-    window.addEventListener('edit-expense', editExp);
-    window.addEventListener('edit-task', editTask);
-    window.addEventListener('edit-supplier', editSup);
-    window.addEventListener('edit-asset', editAsset);
-
-    return () => {
-      window.removeEventListener('open-expense-modal', openExp);
-      window.removeEventListener('open-task-modal', openTask);
-      window.removeEventListener('open-asset-modal', openAsset);
-      window.removeEventListener('open-supplier-modal', openSupplier);
-      window.removeEventListener('open-settings-modal', openSettings);
-      window.removeEventListener('edit-expense', editExp);
-      window.removeEventListener('edit-task', editTask);
-      window.removeEventListener('edit-supplier', editSup);
-      window.removeEventListener('edit-asset', editAsset);
-    };
-  }, []);
+  const renderModalContent = () => {
+    switch (modal.type) {
+      case 'expense':
+        return <AddExpenseForm initialData={modal.data as Expense | null} onSuccess={closeModal} />;
+      case 'task':
+        return <AddTaskForm initialData={modal.data as Task | null} onSuccess={closeModal} />;
+      case 'asset':
+        return <AddAssetForm initialData={modal.data as Asset | null} onSuccess={closeModal} />;
+      case 'supplier':
+        return <AddSupplierForm initialData={modal.data as Supplier | null} onSuccess={closeModal} />;
+      case 'settings':
+        return <ProjectSettingsForm onSuccess={closeModal} />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <main className="min-h-screen bg-[#fcfcfd] dark:bg-slate-950 pb-24">
@@ -83,7 +71,7 @@ export default function Home() {
             <p className="text-xs font-bold text-slate-600 dark:text-slate-300">{new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' })}</p>
           </div>
           <button
-            onClick={() => setIsSettingsModalOpen(true)}
+            onClick={() => openModal('settings')}
             className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors text-slate-400"
           >
             <Settings size={20} />
@@ -105,7 +93,7 @@ export default function Home() {
 
           <div className="flex flex-wrap items-center gap-3">
             <button
-              onClick={() => generatePDFReport(data)}
+              onClick={() => void generatePDFReport(data)}
               className="flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-bold transition-all border border-slate-200 dark:border-slate-700"
             >
               Exportar Relatório
@@ -139,47 +127,14 @@ export default function Home() {
         <ManagementLayer />
       </div>
 
-      {/* Modals */}
+      {/* Single Modal */}
       <Modal
-        isOpen={isExpenseModalOpen}
-        onClose={() => { setIsExpenseModalOpen(false); setEditingExpense(null); }}
-        title={editingExpense ? "Editar Lançamento" : "Novo Lançamento Financeiro"}
+        isOpen={modal.isOpen}
+        onClose={closeModal}
+        title={getModalTitle()}
       >
-        <AddExpenseForm initialData={editingExpense} onSuccess={() => setIsExpenseModalOpen(false)} />
+        {renderModalContent()}
       </Modal>
-
-      <Modal
-        isOpen={isTaskModalOpen}
-        onClose={() => { setIsTaskModalOpen(false); setEditingTask(null); }}
-        title={editingTask ? "Editar Tarefa" : "Agendar Nova Tarefa"}
-      >
-        <AddTaskForm initialData={editingTask} onSuccess={() => setIsTaskModalOpen(false)} />
-      </Modal>
-
-      <Modal
-        isOpen={isAssetModalOpen}
-        onClose={() => { setIsAssetModalOpen(false); setEditingAsset(null); }}
-        title={editingAsset ? "Editar Item" : "Rastrear Item"}
-      >
-        <AddAssetForm initialData={editingAsset} onSuccess={() => setIsAssetModalOpen(false)} />
-      </Modal>
-
-      <Modal
-        isOpen={isSettingsModalOpen}
-        onClose={() => setIsSettingsModalOpen(false)}
-        title="Configurações do Projeto"
-      >
-        <ProjectSettingsForm onSuccess={() => setIsSettingsModalOpen(false)} />
-      </Modal>
-
-      <Modal
-        isOpen={isSupplierModalOpen}
-        onClose={() => { setIsSupplierModalOpen(false); setEditingSupplier(null); }}
-        title={editingSupplier ? "Editar Fornecedor" : "Cadastrar Novo Fornecedor"}
-      >
-        <AddSupplierForm initialData={editingSupplier} onSuccess={() => setIsSupplierModalOpen(false)} />
-      </Modal>
-
     </main>
   );
 }

@@ -116,6 +116,8 @@ export function AddTaskForm({ onSuccess, initialData }: AddTaskFormProps) {
 
                     placeholder="Ex: Pintura da Fachada"
 
+                    maxLength={200}
+
                     className="w-full p-3 bg-secondary rounded-xl border border-input focus:ring-2 focus:ring-primary outline-none transition-all text-sm font-bold text-foreground"
 
                 />
@@ -135,6 +137,10 @@ export function AddTaskForm({ onSuccess, initialData }: AddTaskFormProps) {
                         type="date"
 
                         value={startDate}
+
+                        min="2000-01-01"
+
+                        max="2100-12-31"
 
                         onChange={(e) => {
 
@@ -161,6 +167,10 @@ export function AddTaskForm({ onSuccess, initialData }: AddTaskFormProps) {
                         type="date"
 
                         value={endDate}
+
+                        min="2000-01-01"
+
+                        max="2100-12-31"
 
                         onChange={(e) => {
 

@@ -78,6 +78,7 @@ export function AddSupplierForm({ onSuccess, initialData }: AddSupplierFormProps
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             placeholder="Ex: Marmoraria Rocha"
+                            maxLength={100}
                             className="w-full p-4 bg-secondary rounded-2xl border border-input focus:ring-2 focus:ring-primary outline-none transition-all text-sm font-bold text-foreground"
                         />
                     </div>
@@ -93,6 +94,8 @@ export function AddSupplierForm({ onSuccess, initialData }: AddSupplierFormProps
                                 onChange={handlePhoneChange(setPhone1)}
                                 placeholder="(27) 99999-9999"
                                 maxLength={15}
+                                pattern="\([0-9]{2}\) [0-9]{4,5}-[0-9]{4}"
+                                title="Formato: (XX) XXXXX-XXXX"
                                 className="w-full p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border-none focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm font-bold"
                             />
                         </div>
@@ -105,6 +108,8 @@ export function AddSupplierForm({ onSuccess, initialData }: AddSupplierFormProps
                                 onChange={handlePhoneChange(setPhone2)}
                                 placeholder="(##) #####-####"
                                 maxLength={15}
+                                pattern="\([0-9]{2}\) [0-9]{4,5}-[0-9]{4}"
+                                title="Formato: (XX) XXXXX-XXXX"
                                 className="w-full p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border-none focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm font-bold"
                             />
                         </div>
@@ -120,6 +125,7 @@ export function AddSupplierForm({ onSuccess, initialData }: AddSupplierFormProps
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="contato@empresa.com"
+                                maxLength={100}
                                 className="w-full p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border-none focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm font-bold"
                             />
                         </div>

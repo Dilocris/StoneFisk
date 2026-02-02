@@ -2,10 +2,18 @@
 
 import React, { useMemo } from 'react';
 import { useProject } from '@/context/ProjectContext';
+import { Task } from '@/lib/types';
 import { Card } from '@/components/ui/Card';
 import clsx from 'clsx';
 import { Calendar as CalendarIcon, Info, ChevronLeft, ChevronRight } from 'lucide-react';
 import { formatDateInput } from '@/lib/date';
+
+interface TaskBar extends Task {
+    left: string;
+    width: string;
+    color: string;
+    isOverdue: boolean;
+}
 
 export function GanttWorkspace() {
     const { data } = useProject();
@@ -313,7 +321,7 @@ export function GanttWorkspace() {
                                     <button onClick={() => setViewOffset(0)} className="text-[10px] font-black uppercase text-blue-500 mt-2 hover:underline transition-colors duration-150 hover:text-blue-600">Voltar para Hoje</button>
                                 </div>
                             ) : (
-                                (taskBars as any[]).map((task) => (
+                                (taskBars as TaskBar[]).map((task) => (
                                     <div key={task.id} className="relative h-8">
                                         <div
                                             className={clsx(
